@@ -1,0 +1,22 @@
+{
+  "editor.formatOnSave": true,
+  "eslint.format.enable": true,
+  "eslint.debug": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "eslint.workingDirectories": [
+    {
+      "directory": "./packages/frontend/ui",
+      "changeProcessCWD": true
+    },
+    {
+      "directory": "./packages/frontend/web",
+      "changeProcessCWD": true
+    },
+  ],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "cSpell.words": [
+    "tailwindcss"
+  ],
+}
