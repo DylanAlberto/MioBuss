@@ -1,0 +1,16 @@
+{
+  "extends": "tsconfig/react-library.json",
+  "compilerOptions": {
+    "types": [
+      "vite/client"
+    ],
+  },
+  "include": [
+    "."
+  ],
+  "exclude": [
+    "dist",
+    "build",
+    "node_modules"
+  ]
+}

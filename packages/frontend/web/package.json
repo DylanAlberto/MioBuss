@@ -1,0 +1,34 @@
+{
+  "name": "web",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite dev --port 3000",
+    "build": "vite build",
+    "start": "vite preview",
+    "type-check": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@vitejs/plugin-react": "^4.0.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-icons": "^4.10.1",
+    "react-router-dom": "^6.14.2",
+    "tailwind-config": "workspace:^",
+    "types": "workspace:^",
+    "ui": "workspace:^",
+    "vite": "^4.4.6"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "eslint-config-custom": "workspace:^",
+    "prettier-config-custom": "workspace:*",
+    "tsconfig": "workspace:^",
+    "typescript": "^5.1.6"
+  }
+}
