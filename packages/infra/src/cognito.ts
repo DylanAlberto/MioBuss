@@ -1,6 +1,6 @@
 import cognito from './awsSDK';
 
-async function createUserPoolAndObtainId(poolName: string): Promise<string> {
+async function getOrCreateUserPool(poolName: string): Promise<string> {
   try {
     const listPoolsResponse = await cognito.listUserPools({ MaxResults: 60 });
     const existingPool = listPoolsResponse.UserPools?.find((pool: any) => pool.Name === poolName);
@@ -19,4 +19,4 @@ async function createUserPoolAndObtainId(poolName: string): Promise<string> {
   }
 }
 
-export { createUserPoolAndObtainId };
+export { getOrCreateUserPool };

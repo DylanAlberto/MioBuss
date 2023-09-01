@@ -13,14 +13,13 @@ const ssm = new SSM({
 
 async function putParameter(name: string, value: string, type: string = 'String'): Promise<void> {
   try {
-    const data = await ssm.putParameter({
+    await ssm.putParameter({
       Name: name,
       Value: value,
       Type: type,
       Overwrite: true,
     });
     console.log(`Parameter ${name} created successfully`);
-    console.log(data);
   } catch (error) {
     console.error(`Error creating parameter ${name}:`, error);
     throw error;
