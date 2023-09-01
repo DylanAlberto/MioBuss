@@ -3,13 +3,14 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run dev",
+    "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "clean": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && rm -f pnpm-lock.yaml",
     "update-all": "pnpm up --latest && pnpm recursive up --latest"
   },
   "dependencies": {
+    "@types/node": "^20.5.7",
     "eslint-config-custom": "workspace:*",
     "prettier-config-custom": "workspace:*",
     "tsconfig": "workspace:*"

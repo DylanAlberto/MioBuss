@@ -1,5 +1,5 @@
 module.exports = {
-  extends: ['next', 'turbo', 'prettier', 'airbnb-typescript'],
+  extends: ['next', 'turbo', 'prettier', 'eslint:recommended'],
   rules: {
     '@next/next/no-html-link-for-pages': 'off',
     'import/no-extraneous-dependencies': [
@@ -15,6 +15,8 @@ module.exports = {
         'optionalDependencies': false,
       },
     ],
+    'no-tabs': 'off',
+    'indent': 'off',
   },
   ignorePatterns: ['**/node_modules/**', 'eslintrc.js'],
   parserOptions: {

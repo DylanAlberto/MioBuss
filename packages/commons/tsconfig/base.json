@@ -9,6 +9,7 @@
     "forceConsistentCasingInFileNames": true,
     "inlineSources": false,
     "isolatedModules": true,
+    "lib": ["es2015"],
     "moduleResolution": "node",
     "noUnusedLocals": false,
     "noUnusedParameters": false,
