@@ -1,13 +1,13 @@
 import type { APIGatewayProxyResult } from 'aws-lambda';
-import { CognitoIdentityServiceProvider } from 'aws-sdk';
+import { CognitoIdentityProvider } from '@aws-sdk/client-cognito-identity-provider';
+import { InitiateAuthRequest } from '@aws-sdk/client-cognito-identity-provider';
 import type { ValidatedAPIGatewayProxyEvent } from '../../../lib/response';
 import { formatJSONResponse } from '../../../lib/response';
 import { middyfy } from '../../../lib/middify';
 
 import schema from './schema';
-import { InitiateAuthRequest } from 'aws-sdk/clients/cognitoidentityserviceprovider';
 
-const cognito = new CognitoIdentityServiceProvider();
+const cognito = new CognitoIdentityProvider();
 
 const Handler = async (
   event: ValidatedAPIGatewayProxyEvent<typeof schema>,
@@ -16,7 +16,7 @@ const Handler = async (
 
   const params: InitiateAuthRequest = {
     AuthFlow: 'USER_PASSWORD_AUTH',
-    ClientId: process.env.COGNITO_CLIENT_ID || '',
+    ClientId: process.env.COGNITO_USER_POOL_ID || '',
     AuthParameters: {
       USERNAME: body.username,
       PASSWORD: body.password,
@@ -24,7 +24,7 @@ const Handler = async (
   };
 
   try {
-    const data = await cognito.initiateAuth(params).promise();
+    const data = await cognito.initiateAuth(params);
     return formatJSONResponse({
       statusCode: 200,
       message: 'Logged in successfully',

@@ -3,15 +3,15 @@ import type { AWS } from '@serverless/typescript';
 import schema from './login/schema';
 
 export const functions: AWS['functions'] = {
-  hello: {
-    handler: 'src/functions/hello/handler.main',
-    description: 'Lambda function to say hello',
-    memorySize: 256,
+  login: {
+    handler: 'src/lambdas/auth/login/handler.main',
+    description: 'Lambda function to login a user',
+    memorySize: 128,
     events: [
       {
         http: {
           method: 'post',
-          path: 'hello',
+          path: 'login',
           cors: true,
           request: {
             schemas: {

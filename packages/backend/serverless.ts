@@ -4,17 +4,17 @@ import functions from './src/lambdas';
 
 const serverlessConfiguration: AWS = {
   service: 'api1',
-  frameworkVersion: '3.28.1',
+  frameworkVersion: '3.34.0',
   plugins: ['serverless-esbuild', 'serverless-offline'],
   provider: {
     name: 'aws',
     runtime: 'nodejs18.x',
-    stage: 'dev',
-    region: 'eu-central-1',
+    stage: "${opt:stage, 'dev'}",
+    region: 'us-west-2',
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
-      COGNITO_CLIENT_ID: '${ssm:/api1/dev/cognito-client-id}',
+      COGNITO_USER_POOL_ID: '${ssm:COGNITO_USER_POOL_ID}',
     },
     deploymentMethod: 'direct',
     architecture: 'arm64',
@@ -35,4 +35,4 @@ const serverlessConfiguration: AWS = {
   },
 };
 
-export default serverlessConfiguration;
+module.exports = serverlessConfiguration;
