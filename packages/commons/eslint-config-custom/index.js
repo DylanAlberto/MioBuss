@@ -1,7 +1,7 @@
 module.exports = {
-  extends: ['next', 'turbo', 'prettier', 'eslint:recommended'],
+  extends: ['plugin:react/recommended', 'turbo', 'prettier', 'eslint:recommended'],
   rules: {
-    '@next/next/no-html-link-for-pages': 'off',
+    'react/react-in-jsx-scope': 'off',
     'import/no-extraneous-dependencies': [
       'error',
       {
@@ -19,5 +19,10 @@ module.exports = {
   ignorePatterns: ['**/node_modules/**', 'eslintrc.js'],
   parserOptions: {
     project: './tsconfig.json',
+  },
+  settings: {
+    react: {
+      version: 'detect',
+    },
   },
 };

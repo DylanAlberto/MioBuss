@@ -33527,7 +33527,6 @@ var middyfy = (handler) => {
 // src/lambdas/auth/login/handler.ts
 var cognito = new import_client_cognito_identity_provider.CognitoIdentityProvider();
 var Handler = async (event) => {
-  console.log("entra");
   const body = event.body;
   const params = {
     AuthFlow: "USER_PASSWORD_AUTH",
