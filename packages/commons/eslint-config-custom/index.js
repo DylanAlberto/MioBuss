@@ -15,8 +15,6 @@ module.exports = {
         'optionalDependencies': false,
       },
     ],
-    'no-tabs': 'off',
-    'indent': 'off',
   },
   ignorePatterns: ['**/node_modules/**', 'eslintrc.js'],
   parserOptions: {

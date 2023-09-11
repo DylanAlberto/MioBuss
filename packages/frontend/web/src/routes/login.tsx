@@ -1,16 +1,13 @@
-// src/components/LoginForm.tsx
 import React, { useState } from 'react';
 import CustomInput from 'ui/src/components/CustomInput';
 import CustomButton from 'ui/src/components/CustomButton';
-import { useDispatch } from 'react-redux';
-import { setUser } from '../state/slices/user';
+import api from '../lib/api';
 
-interface LoginFormProps {
+export interface LoginFormProps {
   onLogin?: () => void;
 }
 
 const LoginForm: React.FC<LoginFormProps> = () => {
-  const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -22,8 +19,9 @@ const LoginForm: React.FC<LoginFormProps> = () => {
     setPassword(e.target.value);
   };
 
-  const handleSubmit = () => {
-    dispatch(setUser({ id: '1234', token: 'abc' }));
+  const handleSubmit = async () => {
+    const authenticated = await api.auth.login({ email, password });
+    console.log(authenticated);
   };
 
   return (

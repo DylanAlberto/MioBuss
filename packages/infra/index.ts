@@ -1,6 +1,7 @@
 import { getOrCreateUserPool } from './src/cognito';
 import { putParameter } from './src/parameterStore';
 import dotenv from 'dotenv';
+
 dotenv.config({ path: `./.env.${process.env.NODE_ENV || 'dev'}` });
 
 const poolName = process.env.USER_POOL_NAME || 'test-user-pool';

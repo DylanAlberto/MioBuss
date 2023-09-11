@@ -1,6 +1,6 @@
 import type { AWS } from '@serverless/typescript';
 
-import schema from './login/schema';
+import { loginSchema } from 'types/index';
 
 export const functions: AWS['functions'] = {
   login: {
@@ -15,7 +15,7 @@ export const functions: AWS['functions'] = {
           cors: true,
           request: {
             schemas: {
-              'application/json': schema,
+              'application/json': loginSchema,
             },
           },
         },

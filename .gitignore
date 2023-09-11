@@ -28,8 +28,8 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
-.env.dev
-.env.prod
+.env.development
+.env.production
 
 # turbo
 .turbo

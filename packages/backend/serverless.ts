@@ -3,7 +3,7 @@ import type { AWS } from '@serverless/typescript';
 import functions from './src/lambdas';
 
 const serverlessConfiguration: AWS = {
-  service: 'api1',
+  service: 'api',
   frameworkVersion: '3.34.0',
   plugins: ['serverless-esbuild', 'serverless-offline'],
   provider: {
@@ -31,6 +31,9 @@ const serverlessConfiguration: AWS = {
       define: { 'require.resolve': undefined },
       platform: 'node',
       concurrency: 10,
+    },
+    offline: {
+      useChildProcesses: true,
     },
   },
 };

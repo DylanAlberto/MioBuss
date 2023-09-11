@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "dev": "serverless offline start --stage dev --httpPort 4000 --aws-profile mi-gym-dev"
+    "dev": "serverless offline start --stage dev --httpPort 4000 --reloadHandler --aws-profile mi-gym-dev"
   },
   "keywords": [],
   "author": "",
@@ -19,7 +19,8 @@
     "serverless": "^3.34.0",
     "serverless-esbuild": "^1.46.0",
     "serverless-offline": "^12.0.4",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "types": "workspace:^"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.119",

@@ -1,6 +1,5 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": ["**/.env.*local"],
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
@@ -12,7 +11,8 @@
       "persistent": true,
       "env": [
         "NODE_ENV",
-        "NEXT_PUBLIC_API_URL=http://localhost:3000/api",
+        "VITE_API_URL",
+        "WEB_PORT",
         "AWS_ACCESS_KEY_ID",
         "AWS_SECRET_ACCESS_KEY",
         "AWS_REGION",
