@@ -6,7 +6,7 @@
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "clean": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && rm -f pnpm-lock.yaml",
+    "clean": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && find . -name '.esbuild' -type d -prune -exec rm -rf '{}' + && rm -f pnpm-lock.yaml",
     "update-all": "pnpm up --latest && pnpm recursive up --latest"
   },
   "dependencies": {

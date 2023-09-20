@@ -11,6 +11,14 @@ async function getOrCreateUserPool(poolName: string): Promise<string> {
 
     const createPoolResponse = await cognito.createUserPool({
       PoolName: poolName,
+      AdminCreateUserConfig: {
+        AllowAdminCreateUserOnly: false,
+      },
+      AutoVerifiedAttributes: ['email'],
+      EmailConfiguration: {
+        ReplyToEmailAddress: 'no-reply@mi-gym.com',
+        EmailSendingAccount: 'COGNITO_DEFAULT',
+      },
     });
     return createPoolResponse.UserPool!.Id!;
   } catch (error) {
@@ -19,4 +27,27 @@ async function getOrCreateUserPool(poolName: string): Promise<string> {
   }
 }
 
-export { getOrCreateUserPool };
+async function getOrCreateAppClient(userPoolId: string, clientName: string): Promise<string> {
+  const appClients = await cognito.listUserPoolClients({
+    UserPoolId: userPoolId,
+    MaxResults: 10,
+  });
+
+  const existingClient = appClients.UserPoolClients?.find(
+    (client) => client.ClientName === clientName,
+  );
+
+  if (existingClient) {
+    return existingClient.ClientId!;
+  } else {
+    const newAppClient = await cognito.createUserPoolClient({
+      UserPoolId: userPoolId,
+      ClientName: clientName,
+      ExplicitAuthFlows: ['ALLOW_REFRESH_TOKEN_AUTH', 'ALLOW_USER_PASSWORD_AUTH'],
+    });
+
+    return newAppClient.UserPoolClient!.ClientId!;
+  }
+}
+
+export { getOrCreateUserPool, getOrCreateAppClient };

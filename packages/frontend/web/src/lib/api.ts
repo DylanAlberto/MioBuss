@@ -1,6 +1,4 @@
-import { loginSchema } from 'types';
 import axiosClient from './axiosClient';
-import { FromSchema } from 'json-schema-to-ts';
 
 const api = {
   auth: {
