@@ -1,7 +1,7 @@
 import type { AWS } from '@serverless/typescript';
 import { zodToJsonSchema } from 'zod-to-json-schema';
 
-import { loginInput, signUpInput, confirmUserInput } from 'types/api/auth';
+import { loginInputSchema, signUpInputSchema, confirmUserInputSchema } from 'types/api/auth';
 
 export const functions: AWS['functions'] = {
   login: {
@@ -16,7 +16,7 @@ export const functions: AWS['functions'] = {
           cors: true,
           request: {
             schemas: {
-              'application/json': zodToJsonSchema(loginInput),
+              'application/json': zodToJsonSchema(loginInputSchema),
             },
           },
         },
@@ -35,7 +35,7 @@ export const functions: AWS['functions'] = {
           cors: true,
           request: {
             schemas: {
-              'application/json': zodToJsonSchema(signUpInput),
+              'application/json': zodToJsonSchema(signUpInputSchema),
             },
           },
         },
@@ -54,7 +54,7 @@ export const functions: AWS['functions'] = {
           cors: true,
           request: {
             schemas: {
-              'application/json': zodToJsonSchema(confirmUserInput),
+              'application/json': zodToJsonSchema(confirmUserInputSchema),
             },
           },
         },

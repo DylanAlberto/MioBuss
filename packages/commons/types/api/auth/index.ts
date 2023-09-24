@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const loginInput = z.object({
+export const loginInputSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8),
 });
@@ -11,7 +11,7 @@ export const loginOutputSchema = z.object({
   refreshToken: z.string(),
 });
 
-export const signUpInput = z.object({
+export const signUpInputSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8),
 });
@@ -20,7 +20,7 @@ export const signUpOutputSchema = z.object({
   email: z.string().email(),
 });
 
-export const confirmUserInput = z.object({
+export const confirmUserInputSchema = z.object({
   email: z.string(),
   confirmationCode: z.string(),
 });

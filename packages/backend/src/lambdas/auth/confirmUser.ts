@@ -1,15 +1,15 @@
 import { CognitoIdentityProvider } from '@aws-sdk/client-cognito-identity-provider';
 import { ConfirmSignUpRequest } from '@aws-sdk/client-cognito-identity-provider';
 import { Lambda } from 'src/lib/response';
-import { confirmUserOutputSchema, confirmUserInput } from 'types';
+import { confirmUserOutputSchema, confirmUserInputSchema } from 'types';
 import { z } from 'zod';
 
 const cognito = new CognitoIdentityProvider();
 
 const confirmUser = Lambda(
-  confirmUserInput,
+  confirmUserInputSchema,
   confirmUserOutputSchema,
-  async (event: z.infer<typeof confirmUserInput>) => {
+  async (event: z.infer<typeof confirmUserInputSchema>) => {
     const params: ConfirmSignUpRequest = {
       ClientId: process.env['COGNITO_USER_POOL_CLIENT_ID'],
       Username: event.email,

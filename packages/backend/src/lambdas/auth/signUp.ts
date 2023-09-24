@@ -1,14 +1,14 @@
 import { CognitoIdentityProvider, SignUpRequest } from '@aws-sdk/client-cognito-identity-provider';
-import { signUpInput, signUpOutputSchema } from 'types';
+import { signUpInputSchema, signUpOutputSchema } from 'types';
 import { Lambda } from 'src/lib/response';
 import { z } from 'zod';
 
 const cognito = new CognitoIdentityProvider();
 
 const createAccount = Lambda(
-  signUpInput,
+  signUpInputSchema,
   signUpOutputSchema,
-  async (event: z.infer<typeof signUpInput>) => {
+  async (event: z.infer<typeof signUpInputSchema>) => {
     const params: SignUpRequest = {
       ClientId: process.env['COGNITO_USER_POOL_CLIENT_ID'],
       Username: event.email,
