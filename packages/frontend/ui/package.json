@@ -9,13 +9,13 @@
   },
   "dependencies": {
     "react": "^18.2.0",
-    "react-icons": "^4.10.1",
+    "react-icons": "^4.11.0",
     "tailwind-config": "workspace:^"
   },
   "devDependencies": {
-    "@types/react": "^18.2.21",
+    "@types/react": "^18.2.22",
     "@types/react-dom": "^18.2.7",
-    "eslint": "^8.48.0",
+    "eslint": "^8.50.0",
     "eslint-config-custom": "workspace:^",
     "prettier-config-custom": "workspace:*",
     "tsconfig": "workspace:^",

@@ -3,20 +3,21 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run build && turbo run dev --parallel",
+    "re-build": "find . -name '.turbo' -type d -prune -exec rm -rf '{}' + && turbo run build",
+    "dev": "pnpm run re-build && turbo run dev --parallel",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "clean": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && find . -name '.esbuild' -type d -prune -exec rm -rf '{}' + && find . -name 'dist' -type d -prune -exec rm -rf '{}' + && find . -name '.turbo' -type d -prune -exec rm -rf '{}' + && rm -f pnpm-lock.yaml",
     "update-all": "pnpm up --latest && pnpm recursive up --latest"
   },
   "dependencies": {
-    "@types/node": "^20.5.7",
+    "@types/node": "^20.6.4",
     "eslint-config-custom": "workspace:*",
     "prettier-config-custom": "workspace:*",
     "tsconfig": "workspace:*"
   },
   "devDependencies": {
-    "turbo": "^1.10.13"
+    "turbo": "^1.10.14"
   },
   "packageManager": "pnpm@8.4.0"
 }

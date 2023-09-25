@@ -1,13 +1,12 @@
-import axios, { AxiosInstance } from 'axios';
-import auth from '../auth/index';
+import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import auth from '../auth';
+class ApiClient {
+  private static _instance: AxiosInstance | null = null;
+  private constructor() {}
 
-class apiClient {
-  private axiosInstance: AxiosInstance | null = null;
-  public auth = auth;
-
-  public configure(baseURL: string): void {
-    if (!this.axiosInstance) {
-      this.axiosInstance = axios.create({
+  public static configure(baseURL: string): void {
+    if (!this._instance) {
+      this._instance = axios.create({
         baseURL,
       });
     } else {
@@ -15,12 +14,21 @@ class apiClient {
     }
   }
 
-  public getAxiosInstance(): AxiosInstance {
-    if (!this.axiosInstance) {
+  public static get instance(): AxiosInstance {
+    if (!this._instance) {
       throw new Error('You have to configure the apiClient before use it.');
     }
-    return this.axiosInstance;
+    return this._instance;
   }
+
+  public static async request(config: AxiosRequestConfig): Promise<any> {
+    if (!this._instance) {
+      throw new Error('You have to configure the apiClient before use it.');
+    }
+    return this._instance(config);
+  }
+
+  public static auth = auth;
 }
 
-export default apiClient;
+export default ApiClient;

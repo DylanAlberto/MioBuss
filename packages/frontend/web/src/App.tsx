@@ -7,8 +7,10 @@ import { Provider } from 'react-redux';
 import store from './state/store';
 import Home from './routes/home';
 import Login from './routes/login';
+import Signup from './routes/signUp';
 import './App.css';
-import api from 'api';
+import client from 'api';
+client.configure(import.meta.env.VITE_API_URL);
 
 const routes: RouteObject[] = [
   {
@@ -19,10 +21,11 @@ const routes: RouteObject[] = [
     path: '/login',
     element: < Login />,
   },
+  {
+    path: '/signup',
+    element: < Signup />,
+  },
 ];
-
-const apiClient = new api();
-apiClient.configure(import.meta.env.VITE_API_URL);
 
 const router = createBrowserRouter(routes);
 

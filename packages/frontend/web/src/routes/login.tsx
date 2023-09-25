@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import CustomInput from 'ui/src/components/CustomInput';
 import CustomButton from 'ui/src/components/CustomButton';
-import { useSelector } from 'react-redux';
-import { RootState } from '../state/store';
+import apiClient from 'api';
+
 export interface LoginFormProps {
   onLogin?: () => void;
 }
 
 const LoginForm: React.FC<LoginFormProps> = () => {
-  const apiClient = useSelector((state: RootState) => state.apiClient);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -21,8 +20,7 @@ const LoginForm: React.FC<LoginFormProps> = () => {
   };
 
   const handleSubmit = async () => {
-    const authenticated = await apiClient.auth.login({ email, password });
-    console.log(authenticated);
+    await apiClient.auth.login({ email, password });
   };
 
   return (

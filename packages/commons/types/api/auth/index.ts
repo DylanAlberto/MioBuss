@@ -13,7 +13,12 @@ export const loginOutputSchema = z.object({
 
 export const signUpInputSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(8),
+  password: z
+    .string()
+    .min(8)
+    .refine((value) => /[A-Z]/.test(value), {
+      message: 'Password must contain at least one uppercase letter',
+    }),
 });
 
 export const signUpOutputSchema = z.object({

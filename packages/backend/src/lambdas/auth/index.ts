@@ -1,7 +1,5 @@
 import type { AWS } from '@serverless/typescript';
-import { zodToJsonSchema } from 'zod-to-json-schema';
-
-import { loginInputSchema, signUpInputSchema, confirmUserInputSchema } from 'types/api/auth';
+const basePath = '/auth';
 
 export const functions: AWS['functions'] = {
   login: {
@@ -12,13 +10,8 @@ export const functions: AWS['functions'] = {
       {
         http: {
           method: 'post',
-          path: 'login',
+          path: `${basePath}/login`,
           cors: true,
-          request: {
-            schemas: {
-              'application/json': zodToJsonSchema(loginInputSchema),
-            },
-          },
         },
       },
     ],
@@ -31,13 +24,8 @@ export const functions: AWS['functions'] = {
       {
         http: {
           method: 'post',
-          path: 'sign-up',
+          path: `${basePath}/sign-up`,
           cors: true,
-          request: {
-            schemas: {
-              'application/json': zodToJsonSchema(signUpInputSchema),
-            },
-          },
         },
       },
     ],
@@ -50,13 +38,8 @@ export const functions: AWS['functions'] = {
       {
         http: {
           method: 'post',
-          path: 'confirm-user',
+          path: `${basePath}/confirm-user`,
           cors: true,
-          request: {
-            schemas: {
-              'application/json': zodToJsonSchema(confirmUserInputSchema),
-            },
-          },
         },
       },
     ],

@@ -1,11 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
 import usersReducer from './slices/user';
-import apiClientReducer from './slices/apiClient';
 
 const store = configureStore({
   reducer: {
     users: usersReducer,
-    apiClient: apiClientReducer,
   },
 });
 

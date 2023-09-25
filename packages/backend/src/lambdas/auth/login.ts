@@ -32,8 +32,6 @@ const login = Lambda(
         };
       }
     }
-
-    throw new Error('Authentication failed or tokens not found');
   },
 );
 

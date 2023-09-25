@@ -6,26 +6,26 @@ import {
   confirmUserInputSchema,
   confirmUserOutputSchema,
 } from 'types';
-import { request } from '../lib/request';
 import { z } from 'zod';
+import request from '../lib/request';
 
 const auth = {
-  login: (data: z.infer<typeof loginInputSchema>) =>
+  login: async (data: z.infer<typeof loginInputSchema>) =>
     request(loginInputSchema, loginOutputSchema, {
       method: 'POST',
-      url: '/login',
+      url: '/auth/login',
       data,
     }),
-  signup: (data: z.infer<typeof signUpInputSchema>) =>
+  signup: async (data: z.infer<typeof signUpInputSchema>) =>
     request(signUpInputSchema, signUpOutputSchema, {
       method: 'POST',
-      url: '/signup',
+      url: '/auth/sign-up',
       data,
     }),
-  confirmUser: (data: z.infer<typeof confirmUserInputSchema>) =>
+  confirmUser: async (data: z.infer<typeof confirmUserInputSchema>) =>
     request(confirmUserInputSchema, confirmUserOutputSchema, {
       method: 'POST',
-      url: '/confirm-user',
+      url: '/auth/confirm-user',
       data,
     }),
 };

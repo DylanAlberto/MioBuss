@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      api: path.resolve(__dirname, '../../commons/api/dist/index.js'),
+      api: path.resolve(__dirname, '../../commons/api/dist'),
     },
   },
   optimizeDeps: {

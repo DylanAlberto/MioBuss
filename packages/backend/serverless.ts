@@ -4,7 +4,7 @@ import functions from './src/lambdas';
 
 const serverlessConfiguration: AWS = {
   service: 'api',
-  frameworkVersion: '3.34.0',
+  frameworkVersion: '3.35.2',
   plugins: ['serverless-esbuild', 'serverless-offline'],
   provider: {
     name: 'aws',
