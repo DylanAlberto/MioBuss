@@ -1,20 +1,25 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit';
+import { UserState } from 'types';
 
-const initialState = {
-  id: '',
+const initialState: UserState = {
+  email: '',
   token: '',
+  errors: [],
 };
 
-export const userSlice = createSlice({
-  name: 'counter',
+export const userSlice: Slice<UserState> = createSlice({
+  name: 'user',
   initialState,
   reducers: {
-    setUser: (state, action: { payload: typeof initialState }) => {
-      state = action.payload;
+    setUserState: (state, action: PayloadAction<Partial<UserState>>) => {
+      state = { ...state, ...action.payload };
     },
   },
 });
 
-export const { setUser } = userSlice.actions;
+export const { setUserState } = userSlice.actions;
+export const userSelectors = {
+  getUserErrors: (state: UserState) => state.errors,
+};
 
 export default userSlice.reducer;

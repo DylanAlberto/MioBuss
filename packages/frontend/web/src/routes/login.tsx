@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import CustomInput from 'ui/src/components/CustomInput';
 import CustomButton from 'ui/src/components/CustomButton';
 import apiClient from 'api';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { setUserState, userSelectors } from '../state/slices/user';
 export interface LoginFormProps {
   onLogin?: () => void;
 }
@@ -10,6 +11,7 @@ export interface LoginFormProps {
 const LoginForm: React.FC<LoginFormProps> = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const dispatch = useDispatch();
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -20,7 +22,14 @@ const LoginForm: React.FC<LoginFormProps> = () => {
   };
 
   const handleSubmit = async () => {
-    await apiClient.auth.login({ email, password });
+    const response = await apiClient.auth.login({ email, password });
+
+    if (!response.success) {
+      dispatch(setUserState({ errors: response.data.errors }));
+      return;
+    }
+
+    dispatch(setUserState({ email, token: response.data.accessToken }));
   };
 
   return (

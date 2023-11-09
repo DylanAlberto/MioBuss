@@ -1,21 +1,48 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import { ZodType } from 'zod';
+import { Error } from 'types/api';
 
-export function Lambda<I, O>(
+const httpCodes: { [key: string]: { code: string; statusCode: number; message: string } } = {
+  ok: {
+    code: 'Ok',
+    statusCode: 200,
+    message: 'Ok',
+  },
+  badRequest: {
+    code: 'BadRequest',
+    statusCode: 400,
+    message: 'Bad request',
+  },
+  unauthorized: {
+    code: 'Unauthorized',
+    statusCode: 401,
+    message: 'Unauthorized',
+  },
+  serverError: {
+    code: 'ServerError',
+    statusCode: 500,
+    message: 'Unexpected server error',
+  },
+};
+
+function Lambda<I, O>(
   inputSchema: ZodType<I>,
   outputSchema: ZodType<O>,
-  handlerFunction: (eventData: I) => Promise<O>,
+  handlerFunction: (
+    eventData: I,
+  ) => Promise<
+    | { success: true; statusCode: number; data: O }
+    | { success: false; statusCode: number; data: { errors: Error[] } }
+    | undefined
+  >,
 ): APIGatewayProxyHandler {
   return async (event) => {
     const inputData = JSON.parse(event.body || '{}');
-    console.log('ANTES');
     const parsedInput = inputSchema.safeParse(inputData);
-    console.log('DESPUES');
-    let response = null;
 
     if (!parsedInput.success) {
       return {
-        statusCode: 400,
+        statusCode: httpCodes.badRequest.statusCode,
         body: JSON.stringify({
           success: false,
           errors: parsedInput.error.errors.map((error: any) => ({
@@ -25,30 +52,42 @@ export function Lambda<I, O>(
         }),
       };
     }
-    try {
-      response = await handlerFunction(parsedInput.data);
-    } catch (error: any) {
-      console.error(error);
+
+    const response = await handlerFunction(parsedInput.data);
+
+    if (!response) {
       return {
-        statusCode: error.$metadata.httpStatusCode || 500,
+        statusCode: httpCodes.serverError.statusCode,
         body: JSON.stringify({
           success: false,
-          errors: typeof error === 'object' ? [error] : error,
+          errors: [{ message: httpCodes.serverError.message }],
         }),
       };
     }
-    const parsedOutput = outputSchema.safeParse(response);
+    if (!response?.success) {
+      return {
+        statusCode: response?.statusCode,
+        body: JSON.stringify({
+          success: false,
+          errors: response?.data.errors,
+        }),
+      };
+    }
+
+    const parsedOutput = outputSchema.safeParse(response.data);
 
     if (!parsedOutput.success) {
       return {
-        statusCode: 500,
-        body: JSON.stringify({ message: 'Unexpected output format' }),
+        statusCode: httpCodes.serverError.statusCode,
+        body: JSON.stringify({ success: false, message: 'Unexpected output format' }),
       };
     }
 
     return {
-      statusCode: 200,
-      body: JSON.stringify(parsedOutput.data),
+      statusCode: httpCodes.ok.statusCode,
+      body: JSON.stringify({ success: true, data: parsedOutput.data }),
     };
   };
 }
+
+export { Lambda, httpCodes };

@@ -2,20 +2,31 @@ import {
   RouterProvider,
   createBrowserRouter,
   RouteObject,
+  Outlet,
+  Navigate,
 } from 'react-router-dom';
-import { Provider } from 'react-redux';
+import { Provider, useSelector } from 'react-redux';
 import store from './state/store';
 import Home from './routes/home';
 import Login from './routes/login';
 import Signup from './routes/signUp';
 import './App.css';
 import client from 'api';
+import { UserState } from 'types/state/user/index';
 client.configure(import.meta.env.VITE_API_URL);
+
+function ProtectedRoute() {
+  const token = useSelector((state: UserState) => state.token);
+  return token ? <Outlet /> : <Navigate to="/login" />;
+}
 
 const routes: RouteObject[] = [
   {
     path: '/',
-    element: < Home />,
+    element: <ProtectedRoute />,
+    children: [
+      { path: '/', element: <Home /> }
+    ]
   },
   {
     path: '/login',
