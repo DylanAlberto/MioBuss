@@ -1,8 +1,8 @@
-# mi-gym
+# MioBuss
 
 ## Description
 
-mi-gym is a comprehensive business management solution designed to streamline administrative tasks and operations. Initially developed for gym management, it features user registration, QR code check-ins, and occupancy monitoring, with future plans for adaptation to a wide range of business types.
+MioBuss is a comprehensive business management solution designed to streamline administrative tasks and operations. It features user registration, QR code check-ins, and occupancy monitoring, with future plans for adaptation to a wide range of business types.
 
 ## Features
 
@@ -12,11 +12,11 @@ mi-gym is a comprehensive business management solution designed to streamline ad
 
 ## Prerequisites
 
-Before installing mi-gym, ensure you have [pnpm](https://pnpm.io/installation) installed and AWS credentials properly configured (refer to the AWS CLI [configuration guide](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html)).
+Before installing MioBuss, ensure you have [pnpm](https://pnpm.io/installation) installed and AWS credentials properly configured (refer to the AWS CLI [configuration guide](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html)).
 
 ## Installation
 
-To set up mi-gym, follow these steps:
+To set up MioBuss, follow these steps:
 
 1. Clone the repository to your local machine.
 2. Inside the `infra` folder, create a `.env.dev` file using the `.env.example` as a template.
@@ -28,7 +28,7 @@ To set up mi-gym, follow these steps:
    ```
    pnpm deploy:dev
    ```
-5. Set up your AWS CLI credentials and a profile named `mi-gym-dev`.
+5. Set up your AWS CLI credentials and a profile named `MioBuss-dev`.
 6. In the `frontend` folder, create a `.env` file using the `.env.example` as a template.
 7. Start the project with:
    ```
@@ -37,7 +37,7 @@ To set up mi-gym, follow these steps:
 
 ## Usage
 
-Once the project is up and running, mi-gym allows you to:
+Once the project is up and running, MioBuss allows you to:
 
 - Register new users into the system.
 - Facilitate user check-ins through QR codes.
@@ -61,4 +61,4 @@ This project is in active development. Contributors are encouraged to join the p
 
 ---
 
-Created with :heart: by the mi-gym team.
+Created with :heart: by the MioBuss team.
