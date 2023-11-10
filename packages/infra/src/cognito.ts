@@ -16,7 +16,7 @@ async function getOrCreateUserPool(poolName: string): Promise<string> {
       },
       AutoVerifiedAttributes: ['email'],
       EmailConfiguration: {
-        ReplyToEmailAddress: 'no-reply@mi-gym.com',
+        ReplyToEmailAddress: 'no-reply@mio-buss.com',
         EmailSendingAccount: 'COGNITO_DEFAULT',
       },
     });

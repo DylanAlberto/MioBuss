@@ -16,7 +16,7 @@ const parameters: {
     const userPoolId = await getOrCreateUserPool(poolName);
     console.log('User Pool ID:', userPoolId);
 
-    const appClientName = process.env.USER_POOL_CLIENT_NAME || 'mi-gym-client-dev';
+    const appClientName = process.env.USER_POOL_CLIENT_NAME || 'mio-buss-client-dev';
     const appClientId = await getOrCreateAppClient(userPoolId, appClientName);
     console.log('App Client ID:', appClientId);
 

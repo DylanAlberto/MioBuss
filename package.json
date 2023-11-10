@@ -1,5 +1,5 @@
 {
-  "name": "mi-gym",
+  "name": "mio-buss",
   "private": true,
   "scripts": {
     "build": "turbo run build",

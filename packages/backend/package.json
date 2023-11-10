@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "dev": "serverless offline start --stage dev --httpPort 4000 --reloadHandler --aws-profile mi-gym-dev"
+    "dev": "serverless offline start --stage dev --httpPort 4000 --reloadHandler --aws-profile mio-buss-dev"
   },
   "keywords": [],
   "author": "",
