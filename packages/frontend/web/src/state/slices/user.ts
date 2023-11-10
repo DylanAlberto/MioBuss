@@ -18,8 +18,5 @@ export const userSlice: Slice<UserState> = createSlice({
 });
 
 export const { setUserState } = userSlice.actions;
-export const userSelectors = {
-  getUserErrors: (state: UserState) => state.errors,
-};
 
 export default userSlice.reducer;

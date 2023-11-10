@@ -13,9 +13,9 @@
     "tailwind-config": "workspace:^"
   },
   "devDependencies": {
-    "@types/react": "^18.2.33",
-    "@types/react-dom": "^18.2.14",
-    "eslint": "^8.52.0",
+    "@types/react": "^18.2.37",
+    "@types/react-dom": "^18.2.15",
+    "eslint": "^8.53.0",
     "eslint-config-custom": "workspace:^",
     "prettier-config-custom": "workspace:*",
     "tsconfig": "workspace:^",

@@ -11,8 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-cognito-identity-provider": "^3.438.0",
-    "@aws-sdk/client-ssm": "^3.438.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.445.0",
+    "@aws-sdk/client-ssm": "^3.445.0",
     "dotenv": "^16.3.1",
     "eslint-config-custom": "workspace:^",
     "prettier-config-custom": "workspace:*",

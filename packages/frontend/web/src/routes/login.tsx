@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import CustomInput from 'ui/src/components/CustomInput';
 import CustomButton from 'ui/src/components/CustomButton';
 import apiClient from 'api';
-import { useDispatch, useSelector } from 'react-redux';
-import { setUserState, userSelectors } from '../state/slices/user';
+import { useDispatch } from 'react-redux';
+import { setUserState } from '../state/slices/user';
+import { addNotification, removeNotification } from '../state/slices/notification';
+import { NotificationType } from 'types/state/notification';
 export interface LoginFormProps {
   onLogin?: () => void;
 }
@@ -26,6 +28,7 @@ const LoginForm: React.FC<LoginFormProps> = () => {
 
     if (!response.success) {
       dispatch(setUserState({ errors: response.data.errors }));
+      dispatch(addNotification({ message: 'Login failed', type: NotificationType.ERROR }));
       return;
     }
 
