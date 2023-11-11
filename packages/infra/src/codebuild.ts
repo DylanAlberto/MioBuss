@@ -74,7 +74,6 @@ async function createCodeBuildProject({
       type: 'LINUX_CONTAINER',
       image: 'aws/codebuild/standard:5.0',
       computeType: 'BUILD_GENERAL1_SMALL',
-      environmentVariables,
     },
   });
 
