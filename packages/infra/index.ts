@@ -77,6 +77,8 @@ const parameters: {
       artifactsBucketName,
       role: backendPipelineRole,
       codeBuildProjectName,
+      codestarConnectionArn: connectionArn,
+      githubRepoUrl,
     });
     console.log('Backend Pipeline Created:', backendPipeline.pipeline?.name);
 

@@ -6,10 +6,14 @@ async function createBackendPipeline({
   artifactsBucketName,
   role,
   codeBuildProjectName,
+  codestarConnectionArn,
+  githubRepoUrl,
 }: {
   artifactsBucketName: string;
   role: Role;
   codeBuildProjectName: string;
+  codestarConnectionArn: string;
+  githubRepoUrl: string;
 }) {
   const params: CreatePipelineCommandInput = {
     pipeline: {
@@ -28,12 +32,13 @@ async function createBackendPipeline({
               actionTypeId: {
                 category: 'Source',
                 owner: 'AWS',
-                provider: 'CodeCommit',
+                provider: 'CodeStarSourceConnection',
                 version: '1',
               },
               outputArtifacts: [{ name: 'SourceOutput' }],
               configuration: {
-                RepositoryName: 'MioBuss',
+                ConnectionArn: codestarConnectionArn,
+                FullRepositoryId: githubRepoUrl,
                 BranchName: 'main',
               },
               runOrder: 1,
