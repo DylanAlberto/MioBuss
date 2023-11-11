@@ -58,7 +58,7 @@ async function createCodeBuildProject({
         ],
       },
       build: {
-        commands: ['sls deploy -s dev'],
+        commands: ['cd packages/backend', 'sls deploy -s dev'],
       },
     },
   };
