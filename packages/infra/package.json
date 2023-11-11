@@ -4,15 +4,20 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "deploy:dev": "NODE_ENV=dev ts-node index.ts",
+    "deploy:infra:dev": "NODE_ENV=dev ts-node index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-cognito-identity-provider": "^3.445.0",
-    "@aws-sdk/client-ssm": "^3.445.0",
+    "@aws-sdk/client-codebuild": "^3.449.0",
+    "@aws-sdk/client-codepipeline": "^3.449.0",
+    "@aws-sdk/client-codestar-connections": "^3.449.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.449.0",
+    "@aws-sdk/client-iam": "^3.449.0",
+    "@aws-sdk/client-s3": "^3.449.0",
+    "@aws-sdk/client-ssm": "^3.449.0",
     "dotenv": "^16.3.1",
     "eslint-config-custom": "workspace:^",
     "prettier-config-custom": "workspace:*",

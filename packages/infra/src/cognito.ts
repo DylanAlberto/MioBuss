@@ -1,4 +1,4 @@
-import cognito from './awsSDK';
+import { cognito } from './awsSDK';
 
 async function getOrCreateUserPool(poolName: string): Promise<string> {
   try {

@@ -4,13 +4,14 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "dev": "serverless offline start --stage dev --httpPort 4000 --reloadHandler --aws-profile mio-buss-dev"
+    "dev": "serverless offline start --stage dev --httpPort 4000 --reloadHandler --aws-profile mio-buss-dev",
+    "build:dev": "serverless package --stage dev --aws-profile mio-buss-dev"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-cognito-identity-provider": "^3.445.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.449.0",
     "@serverless/typescript": "^3.30.1",
     "aws-lambda": "^1.0.7",
     "serverless": "^3.36.0",
