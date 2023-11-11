@@ -43,6 +43,9 @@ async function createCodeBuildProject({
     phases: {
       install: {
         commands: [
+          'echo Installing node version...',
+          'nvm install 18.17.0',
+          'nvm use 18.17.0',
           'echo Installing pnpm...',
           'npm install -g pnpm',
           'echo Installing serverless...',
