@@ -38,7 +38,7 @@ async function createBackendPipeline({
               outputArtifacts: [{ name: 'SourceOutput' }],
               configuration: {
                 ConnectionArn: codestarConnectionArn,
-                FullRepositoryId: githubRepoUrl,
+                FullRepositoryId: githubRepoUrl.split('github.com/')[1],
                 BranchName: 'main',
               },
               runOrder: 1,
