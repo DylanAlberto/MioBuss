@@ -6,6 +6,9 @@ interface BuildSpec {
   version: string;
   phases: {
     install?: {
+      'runtime-versions': {
+        nodejs: string;
+      };
       commands: string[];
     };
     pre_build?: {
@@ -42,15 +45,10 @@ async function createCodeBuildProject({
     version: '0.2',
     phases: {
       install: {
+        'runtime-versions': {
+          nodejs: '18',
+        },
         commands: [
-          'echo Installing NVM...',
-          'wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash',
-          `export NVM_DIR="$HOME/.nvm"
-          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-          [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion`,
-          'echo Installing node version...',
-          'nvm install 18.17.0',
-          'nvm use 18.17.0',
           'echo Installing pnpm...',
           'npm install -g pnpm',
           'echo Installing serverless...',
