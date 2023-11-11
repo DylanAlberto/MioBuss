@@ -51,6 +51,7 @@ async function createBackendRole({ artifactsBucketName }: { artifactsBucketName:
           'cloudformation:DeleteStack',
           'cloudformation:DescribeStacks',
           'cloudformation:DescribeStackEvents',
+          'codestar-connections:UseConnection',
         ],
         Resource: '*',
       },
