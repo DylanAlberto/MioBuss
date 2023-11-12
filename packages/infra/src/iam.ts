@@ -63,6 +63,7 @@ async function createBackendRole({ artifactsBucketName }: { artifactsBucketName:
           'cloudformation:DescribeStacks',
           'cloudformation:DescribeStackEvents',
           'cloudformation:DescribeStackResource',
+          'cloudformation:ValidateTemplate',
           'codestar-connections:UseConnection',
           'codebuild:StartBuild',
           'codebuild:BatchGetBuilds',
