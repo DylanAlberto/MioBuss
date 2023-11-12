@@ -1,4 +1,9 @@
-import { CreateProjectCommand, EnvironmentVariableType } from '@aws-sdk/client-codebuild';
+import {
+  CreateProjectCommand,
+  DeleteProjectCommand,
+  DeleteProjectCommandInput,
+  EnvironmentVariableType,
+} from '@aws-sdk/client-codebuild';
 import { Role } from '@aws-sdk/client-iam';
 import { codebuild } from './awsSDK';
 
@@ -29,17 +34,11 @@ interface BuildSpec {
 async function createCodeBuildProject({
   role,
   projectName,
-  codeStarConnectionArn,
-  githubRepoUrl,
   artifactsBucketName,
-  environmentVariables,
 }: {
   role: Role;
   projectName: string;
-  codeStarConnectionArn: string;
-  githubRepoUrl: string;
   artifactsBucketName: string;
-  environmentVariables: { name: string; value: string; type: EnvironmentVariableType }[];
 }) {
   const buildSpec: BuildSpec = {
     version: '0.2',
@@ -78,17 +77,30 @@ async function createCodeBuildProject({
     },
     environment: {
       type: 'LINUX_CONTAINER',
-      image: 'aws/codebuild/standard:5.0',
+      image: 'aws/codebuild/standard:7.0',
       computeType: 'BUILD_GENERAL1_SMALL',
     },
   });
 
+  const params: DeleteProjectCommandInput = {
+    name: projectName,
+  };
+
+  try {
+    await codebuild.send(new DeleteProjectCommand(params));
+    console.log(`* Project ${projectName} deleted.`);
+  } catch (error: any) {
+    console.log(error);
+    console.error('* Error deleting codebuild project:', error);
+    throw error;
+  }
+
   try {
     const response = await codebuild.send(command);
-    console.log('Codebuild project created:', response.project);
+    console.log('* Codebuild project created');
     return response.project;
-  } catch (error) {
-    console.error('Error creating codebuild project:', error);
+  } catch (error: any) {
+    console.error('* Error creating codebuild project:', error);
     throw error;
   }
 }

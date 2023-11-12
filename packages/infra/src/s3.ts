@@ -5,16 +5,16 @@ async function createBucket(bucketName: string) {
   const bucketExists = await checkBucketExists(bucketName);
 
   if (bucketExists) {
-    console.log(`Bucket '${bucketName}' already exists`);
+    console.log(`* Bucket '${bucketName}' already exists`);
     return true;
   }
 
   try {
     await s3.send(new CreateBucketCommand({ Bucket: bucketName }));
-    console.log(`Bucket '${bucketName}' created`);
+    console.log(`* Bucket '${bucketName}' created`);
     return true;
   } catch (error) {
-    console.error('Error creating bucket:', error);
+    console.error('* Error creating bucket:', error);
     return false;
   }
 }

@@ -3,6 +3,16 @@ import {
   CreateRoleCommand,
   CreateRoleCommandInput,
   PutRolePolicyCommand,
+  DeleteRoleCommandInput,
+  DeleteRoleCommand,
+  ListAttachedRolePoliciesCommandInput,
+  ListAttachedRolePoliciesCommand,
+  DetachRolePolicyCommandInput,
+  DetachRolePolicyCommand,
+  ListRolePoliciesCommandInput,
+  DeleteRolePolicyCommandInput,
+  ListRolePoliciesCommand,
+  DeleteRolePolicyCommand,
 } from '@aws-sdk/client-iam';
 import { iam } from './awsSDK';
 
@@ -52,6 +62,7 @@ async function createBackendRole({ artifactsBucketName }: { artifactsBucketName:
           'cloudformation:DeleteStack',
           'cloudformation:DescribeStacks',
           'cloudformation:DescribeStackEvents',
+          'cloudformation:DescribeStackResource',
           'codestar-connections:UseConnection',
           'codebuild:StartBuild',
           'codebuild:BatchGetBuilds',
@@ -59,19 +70,20 @@ async function createBackendRole({ artifactsBucketName }: { artifactsBucketName:
           'logs:CreateLogStream',
           'logs:PutLogEvents',
           'ecr:GetAuthorizationToken',
-          'ssm:GetParameters',
+          'ssm:GetParameter',
+          's3:*',
         ],
         Resource: '*',
       },
       {
         Effect: 'Allow',
-        Action: ['s3:GetObject', 's3:GetObjectVersion', 's3:PutObject', 's3:ListBucket'],
+        Action: ['s3:*'],
         Resource: [`arn:aws:s3:::${artifactsBucketName}/*`, `arn:aws:s3:::${artifactsBucketName}`],
       },
     ],
   };
 
-  const role = await getOrCreateRole(roleName, {
+  const role = await createRole(roleName, {
     RoleName: roleName,
     AssumeRolePolicyDocument: JSON.stringify(trustPolicy),
   });
@@ -90,32 +102,70 @@ async function createBackendRole({ artifactsBucketName }: { artifactsBucketName:
   return role;
 }
 
-async function getOrCreateRole(roleName: string, params: CreateRoleCommandInput) {
+async function createRole(roleName: string, params: CreateRoleCommandInput) {
   try {
     const getRoleCommand = new GetRoleCommand({ RoleName: roleName });
+    const deleteParams: DeleteRoleCommandInput = {
+      RoleName: roleName,
+    };
     const role = await iam.send(getRoleCommand);
 
-    console.log('Role already exists:', role.Role?.RoleName);
+    if (role.Role?.Arn) {
+      console.log(`* Role already exists, deleting it's policies...`);
+      await detachAllPoliciesFromRole(roleName);
 
-    return role.Role;
+      console.log(`* Role already exists, deleting it...`);
+      await iam.send(new DeleteRoleCommand(deleteParams));
+    }
   } catch (error: any) {
-    if (error.Error.Code === 'NoSuchEntity') {
-      console.log(params.AssumeRolePolicyDocument);
-      const createRoleParams: CreateRoleCommandInput = {
-        RoleName: roleName,
-        AssumeRolePolicyDocument: params.AssumeRolePolicyDocument,
-      };
-      const createRoleCommand = new CreateRoleCommand(createRoleParams);
-      const createdRole = await iam.send(createRoleCommand);
-
-      console.log('Role created:', createdRole.Role?.RoleName);
-
-      return createdRole.Role;
-    } else {
-      console.error('Error creating role:', error);
+    if (error.Error.Code !== 'NoSuchEntity') {
+      console.error('* Error deleting role:', error);
       throw error;
     }
   }
+
+  try {
+    const createRoleParams: CreateRoleCommandInput = {
+      RoleName: roleName,
+      AssumeRolePolicyDocument: params.AssumeRolePolicyDocument,
+    };
+    const createRoleCommand = new CreateRoleCommand(createRoleParams);
+    const createdRole = await iam.send(createRoleCommand);
+
+    console.log('* Role created:', createdRole.Role?.RoleName);
+
+    return createdRole.Role;
+  } catch (error: any) {
+    console.error('* Error creating role:', error);
+    throw error;
+  }
 }
 
-export { getOrCreateRole, createBackendRole };
+async function detachAllPoliciesFromRole(roleName: string) {
+  const params: ListAttachedRolePoliciesCommandInput = {
+    RoleName: roleName,
+  };
+  const attachedPolicies = await iam.send(new ListAttachedRolePoliciesCommand(params));
+  for (const policy of attachedPolicies.AttachedPolicies || []) {
+    const detachParams: DetachRolePolicyCommandInput = {
+      RoleName: roleName,
+      PolicyArn: policy.PolicyArn || '',
+    };
+    await iam.send(new DetachRolePolicyCommand(detachParams));
+  }
+
+  const inlinePoliciesParams: ListRolePoliciesCommandInput = {
+    RoleName: roleName,
+  };
+  const inlinePolicies = await iam.send(new ListRolePoliciesCommand(inlinePoliciesParams));
+
+  for (const policyName of inlinePolicies.PolicyNames || []) {
+    const deleteParams: DeleteRolePolicyCommandInput = {
+      RoleName: roleName,
+      PolicyName: policyName,
+    };
+    await iam.send(new DeleteRolePolicyCommand(deleteParams));
+  }
+}
+
+export { createRole, createBackendRole };

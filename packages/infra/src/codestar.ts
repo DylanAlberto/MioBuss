@@ -14,9 +14,7 @@ async function getOrCreateCodeStarConnection(connectionName: string) {
   );
 
   if (existingConnection) {
-    console.log(
-      `Connection '${connectionName}' already exists with ARN: ${existingConnection.ConnectionArn}`,
-    );
+    console.log('* Codestar connection already exists.');
     return existingConnection.ConnectionArn;
   }
 
@@ -28,14 +26,14 @@ async function getOrCreateCodeStarConnection(connectionName: string) {
   try {
     const response = await codestar.send(createConnectionCommand);
     console.log(
-      'Please go to the AWS console -> Developer tools -> Connections and confirm the connection',
+      '* Please go to the AWS console -> Developer tools -> Connections and confirm the connection',
     );
 
     await waitForConnectionConfirmation(response.ConnectionArn as string);
 
     return response.ConnectionArn;
   } catch (error) {
-    console.error('Error creating connection:', error);
+    console.error('* Error creating connection:', error);
     throw error;
   }
 }
@@ -50,13 +48,13 @@ async function waitForConnectionConfirmation(connectionArn: string) {
       );
       if (response.Connection && response.Connection.ConnectionStatus === 'AVAILABLE') {
         isConnected = true;
-        console.log('Connection available!');
+        console.log('* Connection available!');
       } else {
-        console.log('Waiting for connection to be available...');
+        console.log('* Waiting for connection to be available...');
         await new Promise((resolve) => setTimeout(resolve, 30000));
       }
     } catch (error) {
-      console.error('Error verifyin connection', error);
+      console.error('* Error verifyin connection', error);
       throw error;
     }
   }

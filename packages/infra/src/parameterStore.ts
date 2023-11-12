@@ -13,9 +13,9 @@ async function putParameter(
       Type: type,
       Overwrite: true,
     });
-    console.log(`Parameter ${name} created successfully`);
+    console.log(`* Parameter ${name} created successfully`);
   } catch (error) {
-    console.error(`Error creating parameter ${name}:`, error);
+    console.error(`* Error creating parameter ${name}:`, error);
     throw error;
   }
 }

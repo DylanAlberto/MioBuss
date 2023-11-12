@@ -27,10 +27,10 @@ const parameters: {
 (async () => {
   try {
     const userPoolId = await getOrCreateUserPool(poolName);
-    console.log('User Pool ID:', userPoolId);
+    console.log('* User Pool ID:', userPoolId);
 
     const appClientId = await getOrCreateAppClient(userPoolId, appClientName);
-    console.log('App Client ID:', appClientId);
+    console.log('* App Client ID:', appClientId);
 
     parameters.push({
       name: 'COGNITO_USER_POOL_ID',
@@ -45,32 +45,26 @@ const parameters: {
 
     const artifactsBucketExist = await createBucket(artifactsBucketName);
     if (!artifactsBucketExist) {
-      throw new Error('Artifacts bucket not found');
+      throw new Error('* Artifacts bucket not found');
     }
 
     const connectionArn = await getOrCreateCodeStarConnection(connectionName);
     if (!connectionArn) {
-      throw new Error('CodeStar Connection not found');
+      throw new Error('* CodeStar Connection not found');
     }
 
     const backendPipelineRole = await createBackendRole({ artifactsBucketName });
     if (!backendPipelineRole) {
-      throw new Error('Backend role not found');
+      throw new Error('* Backend role not found');
     }
 
     const codebuildProject = await createCodeBuildProject({
       role: backendPipelineRole,
       projectName: codeBuildProjectName,
-      codeStarConnectionArn: connectionArn,
-      githubRepoUrl,
       artifactsBucketName,
-      environmentVariables: parameters.map((param) => ({
-        ...param,
-        type: EnvironmentVariableType.PARAMETER_STORE,
-      })),
     });
     if (!codebuildProject) {
-      throw new Error('Codebuild project not found');
+      throw new Error('* Codebuild project not found');
     }
 
     const backendPipeline = await createBackendPipeline({
@@ -80,12 +74,12 @@ const parameters: {
       codestarConnectionArn: connectionArn,
       githubRepoUrl,
     });
-    console.log('Backend Pipeline Created:', backendPipeline.pipeline?.name);
+    console.log('* Backend Pipeline Created:', backendPipeline.pipeline?.name);
 
     await Promise.all(
       parameters.map((param) => putParameter(param.name, param.value, param.type)) as any,
     );
   } catch (error) {
-    console.error('Error:', error);
+    console.error('* Error:', error);
   }
 })();

@@ -22,7 +22,7 @@ async function getOrCreateUserPool(poolName: string): Promise<string> {
     });
     return createPoolResponse.UserPool!.Id!;
   } catch (error) {
-    console.error('Error creating or retrieving User Pool:', error);
+    console.error('* Error creating or retrieving User Pool:', error);
     throw error;
   }
 }
