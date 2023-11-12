@@ -70,6 +70,7 @@ async function createBackendRole({ artifactsBucketName }: { artifactsBucketName:
           'logs:CreateLogGroup',
           'logs:CreateLogStream',
           'logs:PutLogEvents',
+          'logs:TagResource',
           'ecr:GetAuthorizationToken',
           'ssm:GetParameter',
           's3:*',
