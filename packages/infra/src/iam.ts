@@ -73,6 +73,7 @@ async function createBackendRole({ artifactsBucketName }: { artifactsBucketName:
           'logs:TagResource',
           'ecr:GetAuthorizationToken',
           'ssm:GetParameter',
+          'apigateway:PUT',
           's3:*',
         ],
         Resource: '*',
