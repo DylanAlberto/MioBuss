@@ -6,6 +6,7 @@ export const functions: AWS['functions'] = {
     handler: 'src/lambdas/auth/login.default',
     description: 'Lambda function to login user',
     memorySize: 128,
+    timeout: 10,
     events: [
       {
         http: {
@@ -39,6 +40,34 @@ export const functions: AWS['functions'] = {
         http: {
           method: 'post',
           path: `${basePath}/confirm-user`,
+          cors: true,
+        },
+      },
+    ],
+  },
+  resendConfirmationCode: {
+    handler: 'src/lambdas/auth/resendConfirmationCode.default',
+    description: 'Lambda function to resend confirmation code',
+    memorySize: 128,
+    events: [
+      {
+        http: {
+          method: 'post',
+          path: `${basePath}/resent-confirmation-code`,
+          cors: true,
+        },
+      },
+    ],
+  },
+  validateToken: {
+    handler: 'src/lambdas/auth/validateToken.default',
+    description: 'Lambda function to validate auth token',
+    memorySize: 128,
+    events: [
+      {
+        http: {
+          method: 'post',
+          path: `${basePath}/validate-token`,
           cors: true,
         },
       },

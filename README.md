@@ -28,7 +28,7 @@ To set up MioBuss, follow these steps:
    ```
    pnpm deploy:dev
    ```
-5. Set up your AWS CLI credentials and a profile named `MioBuss-dev`.
+5. Set up your AWS CLI credentials and a profile named `mio-buss-dev`.
 6. In the `frontend` folder, create a `.env` file using the `.env.example` as a template.
 7. Start the project with:
    ```
@@ -43,21 +43,9 @@ Once the project is up and running, MioBuss allows you to:
 - Facilitate user check-ins through QR codes.
 - Monitor the real-time occupancy levels.
 
-## Contributing
-
-Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
 ## License
 
-[Insert License Information Here]
-
-## Authors and Acknowledgements
-
-Thanks to all contributors who have participated in this project.
-
-## Project Status
-
-This project is in active development. Contributors are encouraged to join the project and contribute to its growth.
+This software and its source code are the exclusive property of MioBuss team. All rights, including but not limited to copyright, distribution, reproduction, modification, and use, are reserved. Unauthorized use, copying, distribution, or modification of this software and its documentation, in whole or in part, is strictly prohibited without the prior written consent of MioBuss team.
 
 ---
 

@@ -2,7 +2,6 @@ import {
   CreateProjectCommand,
   DeleteProjectCommand,
   DeleteProjectCommandInput,
-  EnvironmentVariableType,
 } from '@aws-sdk/client-codebuild';
 import { Role } from '@aws-sdk/client-iam';
 import { codebuild } from './awsSDK';
@@ -26,6 +25,10 @@ interface BuildSpec {
       commands: string[];
     };
   };
+  artifacts?: {
+    files: string[];
+    'base-directory': string;
+  };
   cache?: {
     paths: string[];
   };
@@ -35,10 +38,19 @@ async function createCodeBuildProject({
   role,
   projectName,
   artifactsBucketName,
+  installCommands,
+  buildCommands,
+  artifacts,
 }: {
   role: Role;
   projectName: string;
   artifactsBucketName: string;
+  installCommands: string[];
+  buildCommands: string[];
+  artifacts?: {
+    files: string[];
+    'base-directory': string;
+  };
 }) {
   const buildSpec: BuildSpec = {
     version: '0.2',
@@ -47,20 +59,17 @@ async function createCodeBuildProject({
         'runtime-versions': {
           nodejs: '18',
         },
-        commands: [
-          'echo Installing pnpm...',
-          'npm install -g pnpm',
-          'echo Installing serverless...',
-          'npm install -g serverless',
-          'echo Installing dependencies...',
-          'pnpm i',
-        ],
+        commands: installCommands,
       },
       build: {
-        commands: ['cd packages/backend', 'sls deploy -s dev'],
+        commands: buildCommands,
       },
     },
   };
+
+  if (artifacts) {
+    buildSpec.artifacts = artifacts;
+  }
 
   const command = new CreateProjectCommand({
     name: projectName,

@@ -1,23 +1,21 @@
 import React from 'react';
-import NotificationComponent from '../CustomNotification'; // Asume que tienes un componente Notification en tu librería
-import type { Notification as NotificationType } from 'types/state/notification';
+import NotificationComponent from '../CustomNotification';
+import type { Notification } from 'types';
 
 interface NotificationCenterProps {
-  notifications: NotificationType[];
-  onDismiss: ({ id }: NotificationType) => void;
+  notifications: Notification[];
 }
 
-const NotificationCenter: React.FC<NotificationCenterProps> = ({ notifications, onDismiss }) => {
+const NotificationCenter: React.FC<NotificationCenterProps> = ({ notifications }) => {
   return (
     <div className="fixed top-0 right-0 p-6 space-y-2 z-50">
       {notifications.map((notification) => (
         <NotificationComponent
-          key={notification.id}
-          id={notification.id}
+          code={notification.code}
+          key={notification.message}
           type={notification.type}
           message={notification.message}
           duration={notification.duration}
-          onDismiss={() => onDismiss(notification)}
         />
       ))}
     </div>

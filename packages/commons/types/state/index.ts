@@ -1,7 +1,7 @@
 import { UserState } from './user';
-import { Notification } from './notification';
+import { NotificationsState } from './notification';
 
 export type State = {
   user: UserState;
-  notifications: Notification[];
+  notifications: NotificationsState;
 };

@@ -1,28 +1,41 @@
-import {
-  RouterProvider,
-  createBrowserRouter,
-  RouteObject,
-  Outlet,
-  Navigate,
-} from 'react-router-dom';
-import { Provider, useSelector, useDispatch } from 'react-redux';
-import store from './state/store';
-import Home from './routes/home';
-import Login from './routes/login';
-import Signup from './routes/signUp';
+import 'ui/styles.css';
 import './App.css';
 import client from 'api';
-import { UserState } from 'types/state/user/index';
-import { State } from 'types';
-import { addNotification, removeNotification } from './state/slices/notification';
-import { Notification } from 'types/state/notification';
 import NotificationCenter from 'ui/src/components/NotificationCenter';
+import Login from './routes/login';
+import Signup from './routes/signUp';
+import Home from './routes/home';
+import { Navigate, Outlet, RouteObject, RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { notificationState } from './state';
+import SimpleLayout from './layouts/simpleLayout';
+import FullLayout from './layouts/fullLayout';
+import { useEffect, useState } from 'react';
 
 client.configure(import.meta.env.VITE_API_URL);
 
 function ProtectedRoute() {
-  const token = useSelector((state: UserState) => state.token);
-  return token ? <Outlet /> : <Navigate to="/login" />;
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    async function verifyToken() {
+      const token = sessionStorage.getItem('token');
+      if (!token) {
+        setIsAuthenticated(false);
+      } else {
+        try {
+          const response = await client.auth.validateToken({ token });
+          console.log('Validating token');
+          if (response.success) setIsAuthenticated(response.data.isValid);
+        } catch (error) {
+          setIsAuthenticated(false);
+        }
+      }
+    }
+
+    verifyToken();
+  }, []);
+
+  return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
 }
 
 const routes: RouteObject[] = [
@@ -30,33 +43,26 @@ const routes: RouteObject[] = [
     path: '/',
     element: <ProtectedRoute />,
     children: [
-      { path: '/', element: <Home /> }
+      { path: '/', element: <FullLayout>< Home /></FullLayout> }
     ]
   },
   {
     path: '/login',
-    element: < Login />,
+    element: <SimpleLayout>< Login /></SimpleLayout>,
   },
   {
     path: '/signup',
-    element: < Signup />,
+    element: <SimpleLayout>< Signup /></SimpleLayout>,
   },
 ];
 
-const router = createBrowserRouter(routes);
-
 export default function App() {
-  const notifications = useSelector((state: State) => state.notifications);
-  const dispatch = useDispatch();
-
-  const onDismiss = ({ id }: Notification) => {
-    dispatch(removeNotification(id));
-  };
+  const router = createBrowserRouter(routes);
 
   return (
-    <Provider store={store}>
+    <>
       <RouterProvider router={router} />
-      <NotificationCenter notifications={notifications} onDismiss={onDismiss} />
-    </Provider>
+      <NotificationCenter notifications={notificationState((state) => state.notifications)} />
+    </>
   );
 }

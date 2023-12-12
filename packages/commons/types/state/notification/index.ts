@@ -1,13 +1,5 @@
-export enum NotificationType {
-  INFO = 'info',
-  SUCCESS = 'success',
-  WARNING = 'warning',
-  ERROR = 'error',
-}
+import { Notification } from '../../api/notifications';
 
-export type Notification = {
-  id: string;
-  type: NotificationType;
-  message: string;
-  duration?: number;
+export type NotificationsState = {
+  notifications: Notification[];
 };

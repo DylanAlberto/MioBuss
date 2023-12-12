@@ -1,3 +1,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@keyframes borderTrace {
+  0%,
+  100% {
+    border-color: transparent;
+  }
+  25% {
+    border-top-color: inherit;
+  }
+  50% {
+    border-top-color: inherit;
+    border-right-color: inherit;
+  }
+  75% {
+    border-top-color: inherit;
+    border-right-color: inherit;
+    border-bottom-color: inherit;
+  }
+  100% {
+    border-color: inherit;
+  }
+}

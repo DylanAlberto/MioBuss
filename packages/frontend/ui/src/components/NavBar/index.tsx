@@ -1,8 +1,10 @@
 const NavBar: React.FC = () => {
   return (
-    <nav className="p-4 bg-gray-800 text-white">
-      <h1 className="text-2xl">Mi Aplicación</h1>
-    </nav>
+    <header className="bg-blue-500 p-4 text-white">
+      <div className="container mx-auto">
+        <h1 className="text-2xl font-bold">Mi Aplicación</h1>
+      </div>
+    </header>
   );
 };
 

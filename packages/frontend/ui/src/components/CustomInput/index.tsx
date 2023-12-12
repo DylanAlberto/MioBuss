@@ -1,18 +1,19 @@
 interface CustomInputProps {
   placeholder: string;
   type: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  value: string;
+  setState: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const CustomInput: React.FC<CustomInputProps> = ({ placeholder, type, onChange }) => {
-
+const CustomInput: React.FC<CustomInputProps> = ({ placeholder, type, setState, value }) => {
   return (
     <div>
       <input
         className="p-2 border border-gray-300 rounded"
         placeholder={placeholder}
         type={type}
-        onChange={onChange}
+        value={value}
+        onChange={setState}
       />
     </div>
   );

@@ -11,13 +11,13 @@
     "update-all": "pnpm up --latest && pnpm recursive up --latest"
   },
   "dependencies": {
-    "@types/node": "^20.9.0",
+    "@types/node": "^20.10.4",
     "eslint-config-custom": "workspace:*",
     "prettier-config-custom": "workspace:*",
     "tsconfig": "workspace:*"
   },
   "devDependencies": {
-    "turbo": "^1.10.16"
+    "turbo": "^1.11.1"
   },
   "packageManager": "pnpm@8.4.0"
 }

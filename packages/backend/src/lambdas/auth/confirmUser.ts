@@ -1,6 +1,6 @@
 import { CognitoIdentityProvider } from '@aws-sdk/client-cognito-identity-provider';
 import { ConfirmSignUpRequest } from '@aws-sdk/client-cognito-identity-provider';
-import { Lambda } from 'src/lib/response';
+import { Lambda, codes } from 'src/lib/lambda';
 import { confirmUserOutputSchema, confirmUserInputSchema } from 'types';
 import { z } from 'zod';
 
@@ -19,12 +19,22 @@ const confirmUser = Lambda(
     try {
       await cognito.confirmSignUp(params);
       return {
-        email: event.email,
-        confirmed: true,
+        success: true,
+        statusCode: codes.ok.statusCode,
+        data: {
+          email: event.email,
+        },
       };
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error confirming user:', error);
-      throw new Error('Failed to confirm user');
+      return {
+        success: false,
+        statusCode: codes.serverError.statusCode,
+        data: {
+          code: codes.serverError.code,
+          error: error.message,
+        },
+      };
     }
   },
 );

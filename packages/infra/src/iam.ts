@@ -16,6 +16,83 @@ import {
 } from '@aws-sdk/client-iam';
 import { iam } from './awsSDK';
 
+async function createFrontendRole({ artifactsBucketName }: { artifactsBucketName: string }) {
+  const roleName = 'FrontendPipelineRole';
+  const trustPolicy = {
+    Version: '2012-10-17',
+    Statement: [
+      {
+        Effect: 'Allow',
+        Principal: {
+          Service: 'codepipeline.amazonaws.com',
+        },
+        Action: 'sts:AssumeRole',
+      },
+      {
+        Effect: 'Allow',
+        Principal: {
+          Service: 'codebuild.amazonaws.com',
+        },
+        Action: 'sts:AssumeRole',
+      },
+    ],
+  };
+
+  const permissionPolicy = {
+    Version: '2012-10-17',
+    Statement: [
+      {
+        Effect: 'Allow',
+        Action: [
+          's3:*',
+          'cloudformation:*',
+          'iam:CreateRole',
+          'iam:DeleteRole',
+          'iam:AttachRolePolicy',
+          'iam:DetachRolePolicy',
+          'iam:PutRolePolicy',
+          'iam:GetRole',
+          'iam:PassRole',
+          'codestar-connections:UseConnection',
+          'codebuild:StartBuild',
+          'codebuild:BatchGetBuilds',
+          'logs:CreateLogGroup',
+          'logs:CreateLogStream',
+          'logs:PutLogEvents',
+          'logs:TagResource',
+          'ecr:GetAuthorizationToken',
+          'ssm:GetParameter',
+        ],
+        Resource: '*',
+      },
+      {
+        Effect: 'Allow',
+        Action: ['s3:*'],
+        Resource: [`arn:aws:s3:::${artifactsBucketName}/*`, `arn:aws:s3:::${artifactsBucketName}`],
+      },
+    ],
+  };
+
+  const role = await createRole(roleName, {
+    RoleName: roleName,
+    AssumeRolePolicyDocument: JSON.stringify(trustPolicy),
+  });
+
+  if (!role || !role.Arn) {
+    throw new Error('Role not found');
+  }
+
+  const putRolePolicyCommand = new PutRolePolicyCommand({
+    RoleName: roleName,
+    PolicyName: 'permissionPolicy',
+    PolicyDocument: JSON.stringify(permissionPolicy),
+  });
+  await iam.send(putRolePolicyCommand);
+  await new Promise(async (resolve) => setTimeout(resolve, 10000));
+
+  return role;
+}
+
 async function createBackendRole({ artifactsBucketName }: { artifactsBucketName: string }) {
   const roleName = 'BakendPipelineRole';
   const trustPolicy = {
@@ -93,6 +170,7 @@ async function createBackendRole({ artifactsBucketName }: { artifactsBucketName:
     PolicyDocument: JSON.stringify(permissionPolicy),
   });
   await iam.send(putRolePolicyCommand);
+  await new Promise(async (resolve) => setTimeout(resolve, 10000));
 
   return role;
 }
@@ -163,4 +241,4 @@ async function detachAllPoliciesFromRole(roleName: string) {
   }
 }
 
-export { createRole, createBackendRole };
+export { createRole, createBackendRole, createFrontendRole };

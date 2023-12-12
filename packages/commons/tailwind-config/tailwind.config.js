@@ -20,6 +20,7 @@ module.exports = {
       primary: '#654ee6',
       secondary: '#846cfb',
       tertiary: '#30658e',
+      background: '#f7fafc',
     },
   },
   plugins: [],

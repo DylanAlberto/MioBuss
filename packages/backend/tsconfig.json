@@ -1,5 +1,6 @@
 {
-  "extends": "tsconfig/base.json",
+  // TODO: Change to alias
+  "extends": "../commons/tsconfig/base.json",
   "compilerOptions": {
     "baseUrl": ".",
     "jsx": "preserve",

@@ -1,5 +1,10 @@
 import { z } from 'zod';
 
+export const useAuth = z.object({
+  accessToken: z.string(),
+  refreshToken: z.string(),
+});
+
 export const loginInputSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8),
@@ -32,5 +37,20 @@ export const confirmUserInputSchema = z.object({
 
 export const confirmUserOutputSchema = z.object({
   email: z.string(),
-  confirmed: z.boolean(),
+});
+
+export const resendConfirmationCodeInputSchema = z.object({
+  email: z.string(),
+});
+
+export const resendConfirmationCodeOutputSchema = z.object({
+  email: z.string(),
+});
+
+export const validateTokenInputSchema = z.object({
+  token: z.string(),
+});
+
+export const validateTokenOutputSchema = z.object({
+  isValid: z.boolean(),
 });
