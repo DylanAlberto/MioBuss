@@ -4,7 +4,7 @@ class ApiClient {
   private static _instance: AxiosInstance | null = null;
   private constructor() {}
 
-  public static configure(baseURL: string): void {
+  public static configure(baseURL: string, handleAuth: () => void): void {
     if (!this._instance) {
       this._instance = axios.create({
         baseURL,

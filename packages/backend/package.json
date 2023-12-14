@@ -5,7 +5,9 @@
   "main": "index.ts",
   "scripts": {
     "dev": "serverless offline start --stage dev --httpPort 4000 --reloadHandler --aws-profile mio-buss-dev",
-    "build:dev": "serverless package --stage dev --aws-profile mio-buss-dev"
+    "build:dev": "serverless package --stage dev --aws-profile mio-buss-dev",
+    "delete:infra:dev": "serverless remove --stage dev --aws-profile mio-buss-dev",
+    "deploy:dev": "serverless deploy --stage dev --aws-profile mio-buss-dev"
   },
   "keywords": [],
   "author": "",

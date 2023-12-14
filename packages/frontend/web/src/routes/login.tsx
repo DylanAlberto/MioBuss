@@ -30,6 +30,7 @@ const LoginForm: React.FC<LoginFormProps> = () => {
     } else {
       sessionStorage.setItem('token', response.data.accessToken);
       setUserState({ token: response.data.accessToken, refreshToken: response.data.refreshToken });
+      await new Promise(resolve => setTimeout(resolve, 500));
       navigate('/');
     };
   }

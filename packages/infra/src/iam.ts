@@ -13,11 +13,17 @@ import {
   DeleteRolePolicyCommandInput,
   ListRolePoliciesCommand,
   DeleteRolePolicyCommand,
+  GetRoleCommandInput,
 } from '@aws-sdk/client-iam';
 import { iam } from './awsSDK';
 
-async function createFrontendRole({ artifactsBucketName }: { artifactsBucketName: string }) {
-  const roleName = 'FrontendPipelineRole';
+async function createFrontendRole({
+  artifactsBucketName,
+  roleName,
+}: {
+  artifactsBucketName: string;
+  roleName: string;
+}) {
   const trustPolicy = {
     Version: '2012-10-17',
     Statement: [
@@ -93,8 +99,13 @@ async function createFrontendRole({ artifactsBucketName }: { artifactsBucketName
   return role;
 }
 
-async function createBackendRole({ artifactsBucketName }: { artifactsBucketName: string }) {
-  const roleName = 'BakendPipelineRole';
+async function createBackendRole({
+  artifactsBucketName,
+  roleName,
+}: {
+  artifactsBucketName: string;
+  roleName: string;
+}) {
   const trustPolicy = {
     Version: '2012-10-17',
     Statement: [
@@ -177,27 +188,6 @@ async function createBackendRole({ artifactsBucketName }: { artifactsBucketName:
 
 async function createRole(roleName: string, params: CreateRoleCommandInput) {
   try {
-    const getRoleCommand = new GetRoleCommand({ RoleName: roleName });
-    const deleteParams: DeleteRoleCommandInput = {
-      RoleName: roleName,
-    };
-    const role = await iam.send(getRoleCommand);
-
-    if (role.Role?.Arn) {
-      console.log(`* Role already exists, deleting it's policies...`);
-      await detachAllPoliciesFromRole(roleName);
-
-      console.log(`* Role already exists, deleting it...`);
-      await iam.send(new DeleteRoleCommand(deleteParams));
-    }
-  } catch (error: any) {
-    if (error.Error.Code !== 'NoSuchEntity') {
-      console.error('* Error deleting role:', error);
-      throw error;
-    }
-  }
-
-  try {
     const createRoleParams: CreateRoleCommandInput = {
       RoleName: roleName,
       AssumeRolePolicyDocument: params.AssumeRolePolicyDocument,
@@ -241,4 +231,28 @@ async function detachAllPoliciesFromRole(roleName: string) {
   }
 }
 
-export { createRole, createBackendRole, createFrontendRole };
+async function deleteRole(roleName: string) {
+  try {
+    const getRoleParams: GetRoleCommandInput = {
+      RoleName: roleName,
+    };
+
+    await iam.send(new GetRoleCommand(getRoleParams));
+
+    const deleteParams: DeleteRoleCommandInput = {
+      RoleName: roleName,
+    };
+
+    await detachAllPoliciesFromRole(roleName);
+    await iam.send(new DeleteRoleCommand(deleteParams));
+  } catch (error: any) {
+    if (error.Error.Code === 'NoSuchEntity') {
+      console.log('* Role not found', roleName, 'skipping delete.');
+      return;
+    }
+    console.error('* Error deleting role:', error);
+    throw error;
+  }
+}
+
+export { createRole, createBackendRole, createFrontendRole, deleteRole };

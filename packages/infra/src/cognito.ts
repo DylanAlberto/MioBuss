@@ -1,3 +1,8 @@
+import {
+  DeleteUserPoolClientCommand,
+  DeleteUserPoolCommand,
+  ListUserPoolsCommandOutput,
+} from '@aws-sdk/client-cognito-identity-provider';
 import { cognito } from './awsSDK';
 
 async function getOrCreateUserPool(poolName: string): Promise<string> {
@@ -50,4 +55,32 @@ async function getOrCreateAppClient(userPoolId: string, clientName: string): Pro
   }
 }
 
-export { getOrCreateUserPool, getOrCreateAppClient };
+async function deleteCognitoResources(userPoolName: string) {
+  const userPoolId: string | undefined = (
+    await cognito.listUserPools({ MaxResults: 60 })
+  ).UserPools?.find((pool) => pool.Name === userPoolName)?.Id;
+
+  if (!userPoolId) {
+    console.log('* User pool not found, skipping');
+    return;
+  }
+  const appClients = await cognito.listUserPoolClients({
+    UserPoolId: userPoolId,
+    MaxResults: 10,
+  });
+  const existingClient = appClients.UserPoolClients?.find(
+    (client) => client.UserPoolId === userPoolId,
+  );
+
+  if (!existingClient) {
+    console.log('* User pool client not found, skipping');
+    return;
+  }
+
+  await cognito.send(
+    new DeleteUserPoolClientCommand({ UserPoolId: userPoolId, ClientId: existingClient.ClientId }),
+  );
+  await cognito.send(new DeleteUserPoolCommand({ UserPoolId: userPoolId }));
+}
+
+export { getOrCreateUserPool, getOrCreateAppClient, deleteCognitoResources };

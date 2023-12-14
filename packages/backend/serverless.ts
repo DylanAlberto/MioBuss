@@ -13,9 +13,6 @@ const serverlessConfiguration: AWS = {
     region: 'us-west-2',
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
-      AWS_REGION: '${self:provider.region}',
-      AWS_ACCESS_KEY_ID: '${env:AWS_ACCESS_KEY_ID}',
-      AWS_SECRET_ACCESS_KEY: '${env:AWS_SECRET_ACCESS_KEY}',
       COGNITO_USER_POOL_ID: '${ssm:COGNITO_USER_POOL_ID}',
       COGNITO_USER_POOL_CLIENT_ID: '${ssm:COGNITO_USER_POOL_CLIENT_ID}',
     },

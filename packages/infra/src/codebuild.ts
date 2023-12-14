@@ -5,7 +5,7 @@ import {
 } from '@aws-sdk/client-codebuild';
 import { Role } from '@aws-sdk/client-iam';
 import { codebuild } from './awsSDK';
-
+import type { environmentVariables } from './types';
 interface BuildSpec {
   version: string;
   phases: {
@@ -41,6 +41,7 @@ async function createCodeBuildProject({
   installCommands,
   buildCommands,
   artifacts,
+  environmentVariables,
 }: {
   role: Role;
   projectName: string;
@@ -51,6 +52,7 @@ async function createCodeBuildProject({
     files: string[];
     'base-directory': string;
   };
+  environmentVariables?: environmentVariables;
 }) {
   const buildSpec: BuildSpec = {
     version: '0.2',
@@ -88,21 +90,11 @@ async function createCodeBuildProject({
       type: 'LINUX_CONTAINER',
       image: 'aws/codebuild/standard:7.0',
       computeType: 'BUILD_GENERAL1_SMALL',
+      environmentVariables,
     },
   });
 
-  const params: DeleteProjectCommandInput = {
-    name: projectName,
-  };
-
-  try {
-    await codebuild.send(new DeleteProjectCommand(params));
-    console.log(`* Project ${projectName} deleted.`);
-  } catch (error: any) {
-    console.log(error);
-    console.error('* Error deleting codebuild project:', error);
-    throw error;
-  }
+  await deleteCodeBuildProject(projectName);
 
   try {
     const response = await codebuild.send(command);
@@ -114,4 +106,18 @@ async function createCodeBuildProject({
   }
 }
 
-export { createCodeBuildProject };
+async function deleteCodeBuildProject(projectName: string) {
+  const params: DeleteProjectCommandInput = {
+    name: projectName,
+  };
+  try {
+    await codebuild.send(new DeleteProjectCommand(params));
+    console.log(`* Project ${projectName} deleted.`);
+  } catch (error: any) {
+    console.log(error);
+    console.error('* Error deleting codebuild project:', error);
+    throw error;
+  }
+}
+
+export { createCodeBuildProject, deleteCodeBuildProject };

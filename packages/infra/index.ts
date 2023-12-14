@@ -7,51 +7,16 @@ import { createBucket, configureToHostWebApp } from './src/s3';
 import { createCodeBuildProject } from './src/codebuild';
 import createBackendPipeline from './src/backendPipeline';
 import createFrontendPipeline from './src/frontendPipeline';
-import dotenv from 'dotenv';
+import type { parameters } from './src/types';
+import * as constants from './src/constants';
 
-dotenv.config({ path: `./.env.${process.env.NODE_ENV || 'dev'}` });
-
-const poolName = process.env.USER_POOL_NAME || 'mio-buss-user-pool-dev';
-const appClientName = process.env.USER_POOL_CLIENT_NAME || 'mio-buss-client-dev';
-const connectionName = process.env.CODESTAR_CONNECTION_NAME || 'mio-buss-connection-dev';
-const backendArtifactsBucketName = process.env.BACKEND_ARTIFACTS_BUCKET_NAME || '';
-const frontendArtifactsBucketName = process.env.FRONTEND_ARTIFACTS_BUCKET_NAME || '';
-const githubRepoUrl = process.env.GITHUB_REPO_URL || 'https://github.com/DylanAlberto/MioBuss';
-const codeBuildBackendProjectName =
-  process.env.CODEBUILD_BACKEND_PROJECT_NAME || 'mio-buss-backend-codebuild-dev';
-const codeBuildFrontendProjectName =
-  process.env.CODEBUILD_FRONTEND_PROJECT_NAME || 'mio-buss-frontend-codebuild-dev';
-const webAppBucketName = process.env.WEBAPP_BUCKET_NAME || '';
-
-const parameters: {
-  name: string;
-  value: string;
-  type: ParameterType;
-}[] = [];
-
-const backendInstallCommands = [
-  'echo Installing pnpm...',
-  'npm install -g pnpm',
-  'echo Installing serverless...',
-  'npm install -g serverless',
-  'echo Installing dependencies...',
-  'pnpm i',
-];
-const backendBuildCommands = ['cd packages/backend', 'sls deploy -s dev'];
-const frontendInstallCommands = [
-  'echo Installing pnpm...',
-  'npm install -g pnpm',
-  'echo Installing dependencies...',
-  'pnpm i',
-];
-const frontendBuildCommands = ['pnpm build'];
-
+const parameters: parameters = [];
 (async () => {
   try {
-    const userPoolId = await getOrCreateUserPool(poolName);
+    const userPoolId = await getOrCreateUserPool(constants.poolName);
     console.log('* User Pool ID:', userPoolId);
 
-    const appClientId = await getOrCreateAppClient(userPoolId, appClientName);
+    const appClientId = await getOrCreateAppClient(userPoolId, constants.appClientName);
     console.log('* App Client ID:', appClientId);
 
     parameters.push({
@@ -64,35 +29,26 @@ const frontendBuildCommands = ['pnpm build'];
       value: appClientId,
       type: ParameterType.STRING,
     });
-    parameters.push({
-      name: 'AWS_ACCESS_KEY_ID',
-      value: process.env.AWS_ACCESS_KEY_ID || '',
-      type: ParameterType.STRING,
-    });
-    parameters.push({
-      name: 'AWS_SECRET_ACCESS_KEY',
-      value: process.env.AWS_SECRET_ACCESS_KEY || '',
-      type: ParameterType.STRING,
-    });
 
     //API
-    const backendArtifactsBucketExist = await createBucket(backendArtifactsBucketName);
+    const backendArtifactsBucketExist = await createBucket(constants.backendArtifactsBucketName);
     if (!backendArtifactsBucketExist) {
       throw new Error('* Backend Artifacts bucket not found');
     }
 
-    const frontendArtifactsBucketExist = await createBucket(frontendArtifactsBucketName);
+    const frontendArtifactsBucketExist = await createBucket(constants.frontendArtifactsBucketName);
     if (!frontendArtifactsBucketExist) {
       throw new Error('* Frontend Artifacts bucket not found');
     }
 
-    const connectionArn = await getOrCreateCodeStarConnection(connectionName);
+    const connectionArn = await getOrCreateCodeStarConnection(constants.connectionName);
     if (!connectionArn) {
       throw new Error('* CodeStar Connection not found');
     }
 
     const backendPipelineRole = await createBackendRole({
-      artifactsBucketName: backendArtifactsBucketName,
+      artifactsBucketName: constants.backendArtifactsBucketName,
+      roleName: constants.backendPipelineRoleName,
     });
     if (!backendPipelineRole) {
       throw new Error('* Backend role not found');
@@ -100,21 +56,23 @@ const frontendBuildCommands = ['pnpm build'];
 
     const codebuildBackendProject = await createCodeBuildProject({
       role: backendPipelineRole,
-      projectName: codeBuildBackendProjectName,
-      artifactsBucketName: backendArtifactsBucketName,
-      installCommands: backendInstallCommands,
-      buildCommands: backendBuildCommands,
+      projectName: constants.codeBuildBackendProjectName,
+      artifactsBucketName: constants.backendArtifactsBucketName,
+      installCommands: constants.backendInstallCommands,
+      buildCommands: constants.backendBuildCommands,
+      environmentVariables: constants.backendEnvironmentVariables,
     });
     if (!codebuildBackendProject) {
       throw new Error('* Codebuild project not found');
     }
 
     const backendPipeline = await createBackendPipeline({
-      artifactsBucketName: backendArtifactsBucketName,
+      artifactsBucketName: constants.backendArtifactsBucketName,
       role: backendPipelineRole,
-      codeBuildProjectName: codeBuildBackendProjectName,
+      codeBuildProjectName: constants.codeBuildBackendProjectName,
       codestarConnectionArn: connectionArn,
-      githubRepoUrl,
+      githubRepoUrl: constants.githubRepoUrl,
+      pipelineName: constants.backendPipelineName,
     });
     console.log('* Backend Pipeline Created:', backendPipeline.pipeline?.name);
 
@@ -124,26 +82,27 @@ const frontendBuildCommands = ['pnpm build'];
 
     // WebApp
     const frontendRole = await createFrontendRole({
-      artifactsBucketName: frontendArtifactsBucketName,
+      artifactsBucketName: constants.frontendArtifactsBucketName,
+      roleName: constants.frontendPipelineRoleName,
     });
     if (!frontendRole) {
       throw new Error('* Frontend role not found');
     }
 
-    const webAppBucketExist = await createBucket(webAppBucketName, true);
+    const webAppBucketExist = await createBucket(constants.webAppBucketName, true);
     if (!webAppBucketExist) {
       throw new Error('* WebApp bucket not found');
     }
 
-    await configureToHostWebApp(webAppBucketName);
+    await configureToHostWebApp(constants.webAppBucketName);
     console.log('* WebApp bucket configured to host a static web app');
 
     const codebuildFrontendProject = await createCodeBuildProject({
       role: frontendRole,
-      projectName: codeBuildFrontendProjectName,
-      artifactsBucketName: frontendArtifactsBucketName,
-      installCommands: frontendInstallCommands,
-      buildCommands: frontendBuildCommands,
+      projectName: constants.codeBuildFrontendProjectName,
+      artifactsBucketName: constants.frontendArtifactsBucketName,
+      installCommands: constants.frontendInstallCommands,
+      buildCommands: constants.frontendBuildCommands,
       artifacts: {
         files: ['**/*'],
         'base-directory': './packages/frontend/web/dist',
@@ -154,12 +113,13 @@ const frontendBuildCommands = ['pnpm build'];
     }
 
     const frontendPipeline = await createFrontendPipeline({
-      artifactsBucketName: frontendArtifactsBucketName,
+      artifactsBucketName: constants.frontendArtifactsBucketName,
       role: frontendRole,
-      codeBuildProjectName: codeBuildFrontendProjectName,
+      codeBuildProjectName: constants.codeBuildFrontendProjectName,
       codestarConnectionArn: connectionArn,
-      githubRepoUrl,
-      webAppBucketName,
+      githubRepoUrl: constants.githubRepoUrl,
+      webAppBucketName: constants.webAppBucketName,
+      pipelineName: constants.frontendPipelineName,
     });
     console.log('* Frontend Pipeline Created:', frontendPipeline.pipeline?.name);
   } catch (error) {

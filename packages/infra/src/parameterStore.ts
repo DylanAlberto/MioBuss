@@ -1,4 +1,4 @@
-import { ParameterType } from '@aws-sdk/client-ssm';
+import { DeleteParameterCommand, ParameterType } from '@aws-sdk/client-ssm';
 import { ssm } from './awsSDK';
 
 async function putParameter(
@@ -20,4 +20,10 @@ async function putParameter(
   }
 }
 
-export { putParameter };
+async function deleteParameters(paramNames: string[]) {
+  for (const name of paramNames) {
+    await ssm.send(new DeleteParameterCommand({ Name: name }));
+  }
+}
+
+export { putParameter, deleteParameters };

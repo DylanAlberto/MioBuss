@@ -8,7 +8,10 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "clean": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && find . -name '.esbuild' -type d -prune -exec rm -rf '{}' + && find . -name 'dist' -type d -prune -exec rm -rf '{}' + && find . -name '.turbo' -type d -prune -exec rm -rf '{}' + && rm -f pnpm-lock.yaml",
-    "update-all": "pnpm up --latest && pnpm recursive up --latest"
+    "update-all": "pnpm up --latest && pnpm recursive up --latest",
+    "delete:infra:dev": "turbo run delete:infra:dev",
+    "create:infra:dev": "turbo run create:infra:dev",
+    "deploy:dev": "turbo run deploy:dev"
   },
   "dependencies": {
     "@types/node": "^20.10.4",

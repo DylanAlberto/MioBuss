@@ -1,10 +1,5 @@
-import { codepipeline } from './awsSDK';
-import {
-  CreatePipelineCommandInput,
-  CreatePipelineCommand,
-  DeletePipelineCommandInput,
-  DeletePipelineCommand,
-} from '@aws-sdk/client-codepipeline';
+import { CreatePipelineCommandInput } from '@aws-sdk/client-codepipeline';
+import { createPipeline } from './codepipeline';
 import { Role } from '@aws-sdk/client-iam';
 
 async function createBackendPipeline({
@@ -13,14 +8,15 @@ async function createBackendPipeline({
   codeBuildProjectName,
   codestarConnectionArn,
   githubRepoUrl,
+  pipelineName,
 }: {
   artifactsBucketName: string;
   role: Role;
   codeBuildProjectName: string;
   codestarConnectionArn: string;
   githubRepoUrl: string;
+  pipelineName: string;
 }) {
-  const pipelineName = 'BackendPipeline';
   const params: CreatePipelineCommandInput = {
     pipeline: {
       name: pipelineName,
@@ -75,29 +71,11 @@ async function createBackendPipeline({
     },
   };
 
-  const deleteParams: DeletePipelineCommandInput = {
-    name: pipelineName,
-  };
-  try {
-    await codepipeline.send(new DeletePipelineCommand(deleteParams));
-    console.log('* Pipeline deleted successfully.');
-  } catch (error: any) {
-    console.log(error);
-    if (error.name === 'PipelineNotFoundException') {
-      console.log(`* Pipeline ${pipelineName} doesn't exist.`);
-    } else {
-      throw error;
-    }
-  }
+  const pipeline = await createPipeline({
+    params,
+  });
 
-  try {
-    const command = new CreatePipelineCommand(params);
-    const pipeline = await codepipeline.send(command);
-    return pipeline;
-  } catch (error: any) {
-    console.log('* Error creating pipeline:', error);
-    throw error;
-  }
+  return pipeline;
 }
 
 export default createBackendPipeline;

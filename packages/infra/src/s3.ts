@@ -1,7 +1,10 @@
 import {
   CreateBucketCommand,
   CreateBucketCommandInput,
+  DeleteBucketCommand,
+  DeleteObjectsCommand,
   HeadBucketCommand,
+  ListObjectsV2Command,
   PutBucketPolicyCommand,
   PutBucketWebsiteCommand,
   PutPublicAccessBlockCommand,
@@ -44,6 +47,8 @@ async function createBucket(bucketName: string, webAppHosted: boolean = false) {
       return false;
     }
   }
+
+  return true;
 }
 
 async function checkBucketExists(bucketName: string): Promise<boolean> {
@@ -100,4 +105,34 @@ async function configureToHostWebApp(bucketName: string) {
   }
 }
 
-export { createBucket, configureToHostWebApp };
+async function deleteBucket(bucketName: string) {
+  try {
+    const bucketExists = await checkBucketExists(bucketName);
+    if (!bucketExists) {
+      console.log(`* Bucket '${bucketName}' does not exist`);
+      return;
+    }
+    console.log(`* Bucket '${bucketName}' exist, listing objects...`);
+    const listedObjects = await s3.send(new ListObjectsV2Command({ Bucket: bucketName }));
+
+    if (listedObjects.Contents && listedObjects.Contents?.length > 0) {
+      console.log(`* Bucket '${bucketName}' is not empty, deleting contents...`);
+      await s3.send(
+        new DeleteObjectsCommand({
+          Bucket: bucketName,
+          Delete: { Objects: listedObjects.Contents?.map(({ Key }) => ({ Key })) },
+        }),
+      );
+
+      if (listedObjects.IsTruncated) await deleteBucket(bucketName);
+    }
+
+    await s3.send(new DeleteBucketCommand({ Bucket: bucketName }));
+    console.log(`* Bucket '${bucketName}' deleted`);
+  } catch (error) {
+    console.error('* Error deleting bucket:', error);
+    throw error;
+  }
+}
+
+export { createBucket, configureToHostWebApp, deleteBucket };

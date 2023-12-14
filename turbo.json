@@ -6,6 +6,8 @@
       "outputs": ["dist/**"]
     },
     "lint": {},
+    "create:infra:dev": {},
+    "delete:infra:dev": {},
     "dev": {
       "cache": false,
       "persistent": true,
@@ -17,6 +19,9 @@
         "AWS_SECRET_ACCESS_KEY",
         "AWS_REGION"
       ]
+    },
+    "deploy:dev": {
+      "dependsOn": ["^build"]
     }
   }
 }
