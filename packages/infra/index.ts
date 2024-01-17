@@ -5,6 +5,7 @@ import { getOrCreateCodeStarConnection } from './src/codestar';
 import { createBackendRole, createFrontendRole } from './src/iam';
 import { createBucket, configureToHostWebApp } from './src/s3';
 import { createCodeBuildProject } from './src/codebuild';
+import { createRDSInstance } from './src/rds';
 import createBackendPipeline from './src/backendPipeline';
 import createFrontendPipeline from './src/frontendPipeline';
 import type { parameters } from './src/types';
@@ -27,6 +28,11 @@ const parameters: parameters = [];
     parameters.push({
       name: 'COGNITO_USER_POOL_CLIENT_ID',
       value: appClientId,
+      type: ParameterType.STRING,
+    });
+    parameters.push({
+      name: 'DB_NAME',
+      value: constants.dbName,
       type: ParameterType.STRING,
     });
 
@@ -122,6 +128,13 @@ const parameters: parameters = [];
       pipelineName: constants.frontendPipelineName,
     });
     console.log('* Frontend Pipeline Created:', frontendPipeline.pipeline?.name);
+
+    // RDS
+    await createRDSInstance({
+      dbName: constants.dbName,
+      dbMasterUsername: constants.dbMasterUsername,
+      dbMasterPassword: constants.dbMasterPassword,
+    });
   } catch (error) {
     console.error('* Error:', error);
   }

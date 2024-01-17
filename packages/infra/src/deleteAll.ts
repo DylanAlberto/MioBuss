@@ -3,6 +3,7 @@ import { deleteCodeBuildProject } from './codebuild';
 import { deletePipeline } from './codepipeline';
 import { deleteRole } from './iam';
 import { deleteCognitoResources } from './cognito';
+import { deleteRDSInstance } from './rds';
 import * as constants from './constants';
 
 async function main() {
@@ -20,6 +21,7 @@ async function main() {
   await deleteBucket(constants.webAppBucketName);
   await deleteBucket(constants.backendArtifactsBucketName);
   await deleteBucket(constants.frontendArtifactsBucketName);
+  await deleteRDSInstance(constants.dbName);
 
   console.log('Todos los recursos han sido eliminados con éxito.');
 }

@@ -84,10 +84,6 @@ async function createFrontendRole({
     AssumeRolePolicyDocument: JSON.stringify(trustPolicy),
   });
 
-  if (!role || !role.Arn) {
-    throw new Error('Role not found');
-  }
-
   const putRolePolicyCommand = new PutRolePolicyCommand({
     RoleName: roleName,
     PolicyName: 'permissionPolicy',
@@ -171,10 +167,6 @@ async function createBackendRole({
     AssumeRolePolicyDocument: JSON.stringify(trustPolicy),
   });
 
-  if (!role || !role.Arn) {
-    throw new Error('Role not found');
-  }
-
   const putRolePolicyCommand = new PutRolePolicyCommand({
     RoleName: roleName,
     PolicyName: 'permissionPolicy',
@@ -199,6 +191,15 @@ async function createRole(roleName: string, params: CreateRoleCommandInput) {
 
     return createdRole.Role;
   } catch (error: any) {
+    if (error.Error.Code === 'EntityAlreadyExists') {
+      const getRoleParams: GetRoleCommandInput = {
+        RoleName: roleName,
+      };
+
+      const role = await iam.send(new GetRoleCommand(getRoleParams));
+      console.log('* Role already exists:', roleName);
+      return role.Role;
+    }
     console.error('* Error creating role:', error);
     throw error;
   }
@@ -250,6 +251,7 @@ async function deleteRole(roleName: string) {
       console.log('* Role not found', roleName, 'skipping delete.');
       return;
     }
+
     console.error('* Error deleting role:', error);
     throw error;
   }

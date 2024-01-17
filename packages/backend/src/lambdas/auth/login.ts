@@ -2,10 +2,10 @@ import {
   CognitoIdentityProvider,
   InitiateAuthRequest,
 } from '@aws-sdk/client-cognito-identity-provider';
-import { loginInputSchema, loginOutputSchema } from 'types';
+import { loginInputSchema, loginOutputSchema, UserType } from 'types';
 import { Lambda, codes } from 'src/lib/lambda';
 import { z } from 'zod';
-import { AccessTokenModel } from 'src/lib/db/models';
+import { AccessTokenModel } from 'src/lib/cache/models';
 
 const cognito = new CognitoIdentityProvider();
 
@@ -41,9 +41,14 @@ const login = Lambda(
             success: true,
             statusCode: codes.ok.statusCode,
             data: {
-              email: event.email,
-              accessToken: AccessToken,
-              refreshToken: RefreshToken,
+              id: '',
+              name: '',
+              lastName: '',
+              pictureUrl: '',
+              email: '',
+              token: '',
+              refreshToken: '',
+              type: UserType.PERSON,
             },
           };
         }

@@ -1,7 +1,7 @@
 import { validateTokenInputSchema, validateTokenOutputSchema } from 'types';
 import { Lambda, codes } from 'src/lib/lambda';
 import { z } from 'zod';
-import { AccessTokenModel } from 'src/lib/db/models';
+import { AccessTokenModel } from 'src/lib/cache/models';
 
 const login = Lambda(
   validateTokenInputSchema,

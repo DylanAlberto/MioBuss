@@ -1,8 +1,14 @@
-const NavBar: React.FC = () => {
+import { ReactNode } from "react";
+
+interface NavBarProps {
+  children?: ReactNode;
+}
+
+const NavBar: React.FC<NavBarProps> = ({ children }) => {
   return (
     <header className="bg-blue-500 p-4 text-white">
-      <div className="container mx-auto">
-        <h1 className="text-2xl font-bold">Mi Aplicación</h1>
+      <div className="container flex min-h-8">
+        {children}
       </div>
     </header>
   );

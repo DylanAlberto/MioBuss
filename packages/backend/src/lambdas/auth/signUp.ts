@@ -2,6 +2,7 @@ import { CognitoIdentityProvider, SignUpRequest } from '@aws-sdk/client-cognito-
 import { signUpInputSchema, signUpOutputSchema } from 'types';
 import { Lambda, codes } from 'src/lib/lambda';
 import { z } from 'zod';
+import { v4 as uuidv4 } from 'uuid';
 
 const cognito = new CognitoIdentityProvider();
 
@@ -23,6 +24,7 @@ const createAccount = Lambda(
 
     try {
       await cognito.signUp(params);
+
       return {
         success: true,
         statusCode: codes.ok.statusCode,

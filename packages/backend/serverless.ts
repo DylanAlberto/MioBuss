@@ -15,9 +15,17 @@ const serverlessConfiguration: AWS = {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       COGNITO_USER_POOL_ID: '${ssm:COGNITO_USER_POOL_ID}',
       COGNITO_USER_POOL_CLIENT_ID: '${ssm:COGNITO_USER_POOL_CLIENT_ID}',
+      DB_NAME: '${ssm:DB_NAME}',
     },
     deploymentMethod: 'direct',
     architecture: 'arm64',
+    iamRoleStatements: [
+      {
+        Effect: 'Allow',
+        Action: 'cloudwatch:GetMetricData',
+        Resource: '*',
+      },
+    ],
   },
   functions,
   package: { individually: true },

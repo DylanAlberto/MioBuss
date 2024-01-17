@@ -1,6 +1,8 @@
+import { InputHTMLAttributes } from "react";
+
 interface CustomInputProps {
   placeholder: string;
-  type: string;
+  type?: InputHTMLAttributes<HTMLInputElement>["type"];
   value: string;
   setState: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }

@@ -1,11 +1,16 @@
-import { UserState, Error } from 'types';
+import { UserState, Error, UserType } from 'types';
 import { create } from 'zustand';
 
 const initialState: UserState = {
+  id: '',
+  name: '',
+  lastName: '',
+  pictureUrl: '',
   email: '',
   token: '',
   refreshToken: '',
   errors: {},
+  type: UserType.PERSON,
 };
 
 type UserMutations = {

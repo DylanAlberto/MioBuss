@@ -1,8 +1,14 @@
 import { Error } from '../../api/index';
+import { loginOutputSchema } from '../../api/auth';
+import { z } from 'zod';
 
-export type UserState = {
-  email: string;
-  token: string;
-  refreshToken: string;
+export enum UserType {
+  COMPANY = 'company',
+  PERSON = 'person',
+}
+
+export type User = z.infer<typeof loginOutputSchema>;
+
+export type UserState = User & {
   errors: { [key: string]: Error };
 };

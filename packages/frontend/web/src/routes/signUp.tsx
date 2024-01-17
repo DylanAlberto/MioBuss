@@ -15,7 +15,7 @@ const SignupForm: React.FC<SignupFormProps> = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [confirmationCode, setConfirmationCode] = useState('');
   const [isCodeSent, setIsCodeSent] = useState(JSON.parse(sessionStorage.getItem('isCodeSent') as string) || false);
-  const { addError, clearErrors, setUserState, errors, email, token } = userState();
+  const { addError, clearErrors, setUserState, errors, email, token, name, lastName, type } = userState();
   const { addNotification } = notificationState();
   const navigate = useNavigate();
 
@@ -26,7 +26,7 @@ const SignupForm: React.FC<SignupFormProps> = () => {
       return;
     }
 
-    const response = await apiClient.auth.signup({ email, password });
+    const response = await apiClient.auth.signup({ name, lastName, email, password, type });
     if (!response.success) {
       addError(response.data.error);
       return;
@@ -50,7 +50,7 @@ const SignupForm: React.FC<SignupFormProps> = () => {
       addError(loginResponse.data.error);
       return;
     } else {
-      setUserState({ token: loginResponse.data.accessToken, refreshToken: loginResponse.data.refreshToken });
+      setUserState({ token: loginResponse.data.token, refreshToken: loginResponse.data.refreshToken });
     }
   };
 
@@ -78,6 +78,12 @@ const SignupForm: React.FC<SignupFormProps> = () => {
 
       {!isCodeSent ? (
         <>
+          <div className="mb-4">
+            <CustomInput placeholder="Name" setState={(e) => setUserState({ name: e.target.value })} value={name} />
+          </div>
+          <div className="mb-4">
+            <CustomInput placeholder="Name" setState={(e) => setUserState({ lastName: e.target.value })} value={lastName} />
+          </div>
           <div className="mb-4">
             <CustomInput placeholder="Email" type="email" setState={(e) => setUserState({ email: e.target.value })} value={email} />
           </div>

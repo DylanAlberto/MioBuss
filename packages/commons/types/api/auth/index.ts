@@ -11,13 +11,21 @@ export const loginInputSchema = z.object({
 });
 
 export const loginOutputSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  lastName: z.string(),
+  pictureUrl: z.string(),
   email: z.string().email(),
-  accessToken: z.string(),
+  token: z.string(),
   refreshToken: z.string(),
+  type: z.enum(['company', 'person']),
 });
 
 export const signUpInputSchema = z.object({
+  name: z.string(),
+  lastName: z.string(),
   email: z.string().email(),
+  type: z.enum(['company', 'person']),
   password: z
     .string()
     .min(8)
